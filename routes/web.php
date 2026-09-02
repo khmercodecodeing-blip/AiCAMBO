@@ -91,6 +91,11 @@ $router->get('/telegram-adder-pro', function () {
     (new CourseController())->telegramAdderPage();
 });
 
+// All Tools catalog
+$router->get('/tools', function () {
+    (new CourseController())->toolsPage();
+});
+
 // Privacy & Refund Policy Page
 $router->get('/policy', function () {
     (new PageController())->policy();

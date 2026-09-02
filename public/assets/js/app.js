@@ -11,7 +11,76 @@ document.addEventListener('DOMContentLoaded', () => {
     initDeleteConfirmations();
     initFlashMessages();
     initServiceWorker();
+    initProductSearch();
 });
+
+/**
+ * Smart product search — works on any page with #course-search-input + .course-grid
+ * (home catalog, /tools). Matches every typed word against title/description/type,
+ * in any order, so "adder telegram" and "telegram adder" both find the same product.
+ */
+function initProductSearch() {
+    const input = document.getElementById('course-search-input');
+    const clearBtn = document.getElementById('search-clear-btn');
+    const grid = document.querySelector('.course-grid');
+    if (!input || !grid) return;
+
+    const cards = Array.from(grid.querySelectorAll('.course-card')).map((card) => ({
+        el: card,
+        text: [
+            card.querySelector('.card-title')?.textContent || '',
+            card.querySelector('.card-desc')?.textContent || '',
+            card.querySelector('.card-image span')?.textContent || '',
+        ].join(' ').toLowerCase(),
+    }));
+
+    let noResultsEl = document.getElementById('no-search-results');
+    if (!noResultsEl) {
+        noResultsEl = document.createElement('div');
+        noResultsEl.id = 'no-search-results';
+        noResultsEl.className = 'text-center';
+        noResultsEl.style.cssText = 'display: none; width: 100%; padding: 60px 0; grid-column: 1 / -1;';
+        noResultsEl.innerHTML = `
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" style="margin: 0 auto 16px;">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                <line x1="8" y1="11" x2="14" y2="11" stroke-width="2"/>
+            </svg>
+            <p class="text-muted" style="font-family: 'Kantumruy Pro', sans-serif;">រកមិនឃើញផលិតផលដែលអ្នកស្វែងរកទេ (No products found)</p>
+        `;
+        grid.appendChild(noResultsEl);
+    }
+
+    function runSearch() {
+        const query = input.value.toLowerCase().trim().replace(/\s+/g, ' ');
+        if (clearBtn) clearBtn.style.display = query.length > 0 ? 'flex' : 'none';
+
+        if (!query) {
+            cards.forEach((c) => { c.el.style.display = 'flex'; });
+            noResultsEl.style.display = 'none';
+            return;
+        }
+
+        const tokens = query.split(' ').filter(Boolean);
+        let visibleCount = 0;
+
+        cards.forEach((c) => {
+            const matchesAll = tokens.every((t) => c.text.includes(t));
+            c.el.style.display = matchesAll ? 'flex' : 'none';
+            if (matchesAll) visibleCount++;
+        });
+
+        noResultsEl.style.display = visibleCount === 0 ? 'block' : 'none';
+    }
+
+    input.addEventListener('input', runSearch);
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            input.value = '';
+            runSearch();
+            input.focus();
+        });
+    }
+}
 
 /**
  * Register the service worker so the site can be installed / used like an app on mobile

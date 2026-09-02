@@ -2,6 +2,6 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="<?= asset('js/app.js') ?>?v=1.1.0"></script>
+<script src="<?= asset('js/app.js') ?>?v=1.1.1"></script>
 </body>
 </html>

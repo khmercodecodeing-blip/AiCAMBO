@@ -36,7 +36,7 @@ if ($currentUri !== '/' && str_ends_with($currentUri, '/')) {
     <link rel="apple-touch-icon" href="<?= asset('images/icons/apple-touch-icon.png') ?>">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="<?= asset('css/style.css') ?>?v=1.1.0">
+    <link rel="stylesheet" href="<?= asset('css/style.css') ?>?v=1.1.1">
 
     <!-- SweetAlert2 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
@@ -62,7 +62,7 @@ if ($currentUri !== '/' && str_ends_with($currentUri, '/')) {
         </a>
 
         <!-- Navbar Search -->
-        <?php if ($currentUri === '/'): ?>
+        <?php if (in_array($currentUri, ['/', '/tools'], true)): ?>
         <div class="navbar-search">
             <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); display: flex; align-items: center; pointer-events: none;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -78,7 +78,8 @@ if ($currentUri !== '/' && str_ends_with($currentUri, '/')) {
 
         <div class="navbar-links">
             <a href="<?= APP_URL ?>" class="<?= $currentUri === '/' ? 'active' : '' ?>">Courses</a>
-            <a href="<?= APP_URL ?>/telegram-adder-pro" class="<?= $currentUri === '/telegram-adder-pro' ? 'active' : '' ?>">Telegram Adder Pro</a>
+            <a href="<?= APP_URL ?>/tools" class="<?= $currentUri === '/tools' ? 'active' : '' ?>">Tools</a>
+            <a href="<?= APP_URL ?>/telegram-adder-pro" class="<?= $currentUri === '/telegram-adder-pro' ? 'active' : '' ?>">Tool Add Telegram</a>
             <?php if (isset($_SESSION['user_email'])): ?>
                 <a href="<?= APP_URL ?>/my-downloads" class="<?= $currentUri === '/my-downloads' ? 'active' : '' ?>" style="display:inline-flex; align-items:center; gap:8px;">
                     <?php if (!empty($_SESSION['user_picture'])): ?>
@@ -106,7 +107,7 @@ if ($currentUri !== '/' && str_ends_with($currentUri, '/')) {
         <span class="bottom-nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
         <span>Home</span>
     </a>
-    <a href="<?= APP_URL ?>/telegram-adder-pro" class="bottom-nav-item <?= $currentUri === '/telegram-adder-pro' ? 'active' : '' ?>">
+    <a href="<?= APP_URL ?>/tools" class="bottom-nav-item <?= $currentUri === '/tools' ? 'active' : '' ?>">
         <span class="bottom-nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
         <span>Tools</span>
     </a>

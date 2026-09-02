@@ -34,6 +34,26 @@ class CourseModel
     }
 
     /**
+     * Get all active products of a given type ('tool' or 'course')
+     */
+    public function getAllByType(string $type): array
+    {
+        return $this->db->fetchAll(
+            "SELECT c.*, COALESCE(i.student_count, 0) as student_count
+             FROM courses c
+             LEFT JOIN (
+                 SELECT course_id, COUNT(*) as student_count
+                 FROM invoices
+                 WHERE payment_status = 'completed'
+                 GROUP BY course_id
+             ) i ON c.id = i.course_id
+             WHERE c.is_active = 1 AND c.id NOT IN (1, 2, 3) AND c.type = :type
+             ORDER BY c.created_at DESC",
+            [':type' => $type]
+        );
+    }
+
+    /**
      * Get all courses (including inactive) for admin
      */
     public function getAllAdmin(): array

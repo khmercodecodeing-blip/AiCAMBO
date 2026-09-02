@@ -51,4 +51,14 @@ class CourseController
         $pageTitle = 'Telegram Adder Pro — ' . APP_NAME;
         require APP_ROOT . '/app/views/courses/telegram_adder.php';
     }
+
+    /**
+     * Display catalog of all Tools (type = 'tool')
+     */
+    public function toolsPage(): void
+    {
+        $courses = $this->courseModel->getAllByType('tool');
+        $pageTitle = 'All Tools — ' . APP_NAME;
+        require APP_ROOT . '/app/views/courses/tools.php';
+    }
 }
