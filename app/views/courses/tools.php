@@ -9,7 +9,7 @@
 
         <!-- Featured: Telegram Adder Pro (Tool Add Telegram) -->
         <a href="<?= APP_URL ?>/telegram-adder-pro" class="glass-card fade-in" style="display:flex;align-items:center;gap:16px;padding:20px 24px;margin-bottom:32px;border:1px solid var(--border-accent);text-decoration:none;">
-            <div style="width:48px;height:48px;border-radius:12px;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.4rem;">🚀</div>
+            <img src="<?= APP_URL ?>/PhotoTool/Aderr.PNG" alt="Telegram Adder Pro" style="width:72px;height:72px;border-radius:12px;object-fit:cover;flex-shrink:0;border:1px solid var(--border-color);">
             <div style="flex:1;">
                 <div style="font-weight:700;color:var(--text-primary);font-size:1rem;"><?= e(t('tools.featured')) ?></div>
                 <div style="font-size:0.85rem;color:var(--text-secondary);"><?= e(t('tools.featured_desc')) ?></div>
