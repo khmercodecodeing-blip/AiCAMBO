@@ -37,9 +37,9 @@ function env(string $key, $default = null) {
 
 // Database Configuration
 define('DB_HOST', env('DB_HOST', 'localhost'));
-define('DB_NAME', env('DB_NAME', 'uhewwnouchsina7_user_license'));
-define('DB_USER', env('DB_USER', 'uhewwnouchsina7_user_license_tel'));
-define('DB_PASS', env('DB_PASS', 'D9W8$sk@6xA_4{R-'));
+define('DB_NAME', env('DB_NAME', ''));
+define('DB_USER', env('DB_USER', ''));
+define('DB_PASS', env('DB_PASS', ''));
 
 // Application
 define('BASE_PATH', env('BASE_PATH', '/web'));
@@ -92,6 +92,10 @@ define('ADMIN_PASSWORD', env('ADMIN_PASSWORD', ''));
 
 // Webhook
 define('WEBHOOK_SECRET', env('WEBHOOK_SECRET', ''));
+
+// License key signing (used to generate/verify Telegram Adder Pro license keys)
+define('LICENSE_SIGNING_SECRET', env('LICENSE_SIGNING_SECRET', ''));
+define('LICENSE_API_KEY', env('LICENSE_API_KEY', ''));
 
 // QR Settings
 define('QR_EXPIRY_MINUTES', (int) env('QR_EXPIRY_MINUTES', 4));

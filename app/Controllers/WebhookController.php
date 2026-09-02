@@ -165,7 +165,7 @@ class WebhookController
         if (strlen($raw) === 16) {
             $body = substr($raw, 0, 12);
             $sig = substr($raw, 12, 4);
-            $secret = "TGA_PR0_s3cR3t_2026xQ";
+            $secret = LICENSE_SIGNING_SECRET;
             $expected = strtoupper(substr(hash_hmac('sha256', $body, $secret), 0, 4));
             if ($sig === $expected) {
                 $code = substr($body, 0, 2);
@@ -176,7 +176,7 @@ class WebhookController
         }
 
         $apiUrl = APP_URL . '/key/api/register.php';
-        $apiKey = 'mK9@xP2#qL7nR4$vT8wJ1^cF5hB6yN3*';
+        $apiKey = LICENSE_API_KEY;
         $expiresAt = date('Y-m-d', strtotime("+$days days"));
         
         $payload = [

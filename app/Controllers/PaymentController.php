@@ -108,7 +108,7 @@ class PaymentController
                 $rand = strtoupper(substr(md5(uniqid(rand(), true)), 0, 10));
             }
             $body = $code . $rand;
-            $secret = "TGA_PR0_s3cR3t_2026xQ";
+            $secret = LICENSE_SIGNING_SECRET;
             $sig = strtoupper(substr(hash_hmac('sha256', $body, $secret), 0, 4));
             $raw = $body . $sig;
             $licenseKey = sprintf("%s-%s-%s-%s", substr($raw, 0, 4), substr($raw, 4, 4), substr($raw, 8, 4), substr($raw, 12, 4));
@@ -525,7 +525,7 @@ class PaymentController
         if (strlen($raw) === 16) {
             $body = substr($raw, 0, 12);
             $sig = substr($raw, 12, 4);
-            $secret = "TGA_PR0_s3cR3t_2026xQ";
+            $secret = LICENSE_SIGNING_SECRET;
             $expected = strtoupper(substr(hash_hmac('sha256', $body, $secret), 0, 4));
             if ($sig === $expected) {
                 $code = substr($body, 0, 2);
@@ -536,7 +536,7 @@ class PaymentController
         }
 
         $apiUrl = APP_URL . '/key/api/register.php';
-        $apiKey = 'mK9@xP2#qL7nR4$vT8wJ1^cF5hB6yN3*';
+        $apiKey = LICENSE_API_KEY;
         $expiresAt = date('Y-m-d', strtotime("+$days days"));
         
         $payload = [
