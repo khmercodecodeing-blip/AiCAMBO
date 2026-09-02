@@ -126,6 +126,10 @@ if ($currentUri !== '/' && str_ends_with($currentUri, '/')) {
         <span class="bottom-nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></span>
         <span><?= e(t('nav.support')) ?></span>
     </button>
+    <a href="<?= APP_URL ?>/lang/<?= current_lang() === 'km' ? 'en' : 'km' ?>" class="bottom-nav-item">
+        <span class="bottom-nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
+        <span><?= current_lang() === 'km' ? 'ខ្មែរ' : 'EN' ?></span>
+    </a>
 </nav>
 
 <!-- Flash Messages -->
