@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initMobileMenu();
     initAdminSidebarMobile();
     initBuyButtons();
+    initPaymentMethodSelector();
     initDeleteConfirmations();
     initFlashMessages();
 });
@@ -392,6 +393,39 @@ function initBuyButtons() {
             }
         });
     }
+}
+
+/**
+ * Payment method selector (checkout page + quick-checkout modal)
+ * Only Bakong KHQR is functional; ABA PayWay is shown as a selectable-looking
+ * option but is disabled until the real integration is ready.
+ */
+function initPaymentMethodSelector() {
+    document.querySelectorAll('.payment-method-option').forEach(option => {
+        option.addEventListener('click', () => {
+            if (option.classList.contains('disabled')) {
+                const message = 'ABA PayWay is coming soon. Please use Bakong KHQR for now.';
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Coming Soon',
+                        text: message,
+                        background: '#0f1d32',
+                        color: '#f1f5f9'
+                    });
+                } else {
+                    alert(message);
+                }
+                return;
+            }
+
+            const list = option.closest('.payment-method-list');
+            if (list) {
+                list.querySelectorAll('.payment-method-option').forEach(el => el.classList.remove('selected'));
+            }
+            option.classList.add('selected');
+        });
+    });
 }
 
 /**
