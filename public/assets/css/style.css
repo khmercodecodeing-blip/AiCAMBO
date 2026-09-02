@@ -980,31 +980,18 @@ select.form-control {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 5px;
-    min-width: 60px;
-    height: 32px;
-    padding: 0 10px;
-    border-radius: 7px;
-    font-weight: 800;
-    font-size: 0.72rem;
-    letter-spacing: 0.5px;
-    color: #fff;
-    font-family: 'Inter', sans-serif;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    overflow: hidden;
     flex-shrink: 0;
+    background: #fff;
 }
 
-.pm-logo svg {
-    width: 16px;
-    height: 16px;
-    flex-shrink: 0;
-}
-
-.pm-logo-bakong {
-    background: linear-gradient(135deg, #0b2f6b, #0f6cbd);
-}
-
-.pm-logo-aba {
-    background: linear-gradient(135deg, #7a1123, #a3162f);
+.pm-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .badge-recommended {

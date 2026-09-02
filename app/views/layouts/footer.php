@@ -46,8 +46,7 @@
                 <div class="payment-method-list" style="width: 100%;">
                     <div class="payment-method-option selected" data-payment-method="bakong">
                         <span class="pm-logo pm-logo-bakong">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><line x1="14" y1="14" x2="21" y2="14"/><line x1="14" y1="21" x2="21" y2="21"/><line x1="17.5" y1="14" x2="17.5" y2="21"/></svg>
-                            KHQR
+                            <img src="<?= asset('images/payment/bakong.png') ?>" alt="Bakong">
                         </span>
                         <div class="pm-info">
                             <span class="pm-name">Bakong KHQR</span>
@@ -56,8 +55,7 @@
                     </div>
                     <div class="payment-method-option disabled" data-payment-method="aba" title="Coming Soon">
                         <span class="pm-logo pm-logo-aba">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 4l6-2 6 2"/></svg>
-                            ABA
+                            <img src="<?= asset('images/payment/aba.jpg') ?>" alt="ABA">
                         </span>
                         <div class="pm-info">
                             <span class="pm-name">ABA PayWay</span>
@@ -447,7 +445,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <script src="<?= asset('js/qrcode.min.js') ?>"></script>
 <script>if (typeof QRCode === 'undefined') { document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>'); }</script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="<?= asset('js/app.js') ?>?v=1.0.6"></script>
+<script src="<?= asset('js/app.js') ?>?v=1.0.7"></script>
 
 </body>
 </html>
