@@ -9,11 +9,11 @@ $remainingSecs = max(0, $expiresAt - time());
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= e($pageTitle) ?></title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%233b82f6'/%3E%3Ctext x='16' y='22' font-family='Inter' font-size='18' font-weight='bold' fill='white' text-anchor='middle'%3EC%3C/text%3E%3C/svg%3E">
+    <link rel="icon" type="image/png" href="<?= asset('images/icons/favicon-32.png') ?>">
     <link rel="manifest" href="<?= APP_URL ?>/manifest.json">
     <meta name="theme-color" content="#0a1628">
     <link rel="apple-touch-icon" href="<?= asset('images/icons/apple-touch-icon.png') ?>">
-    <link rel="stylesheet" href="<?= asset('css/style.css') ?>?v=1.1.1">
+    <link rel="stylesheet" href="<?= asset('css/style.css') ?>?v=1.1.2">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="<?= asset('js/qrcode.min.js') ?>"></script>
     <script>if (typeof QRCode === 'undefined') { document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>'); }</script>
@@ -25,11 +25,7 @@ $remainingSecs = max(0, $expiresAt - time());
 <nav class="navbar">
     <div class="navbar-inner">
         <a href="<?= APP_URL ?>" class="navbar-brand">
-            <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="32" height="32" rx="8" fill="url(#bg)"/>
-                <path d="M8 16C8 11.58 11.58 8 16 8V8C20.42 8 24 11.58 24 16V24H16C11.58 24 8 20.42 8 16V16Z" fill="white" fill-opacity="0.9"/>
-                <defs><linearGradient id="bg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#3b82f6"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs>
-            </svg>
+            <img src="<?= asset('images/icons/logo-navbar.png') ?>" alt="<?= e(APP_NAME) ?>" width="32" height="32">
             <?= e(APP_NAME) ?>
         </a>
     </div>

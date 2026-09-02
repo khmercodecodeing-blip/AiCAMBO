@@ -24,7 +24,7 @@ if ($currentUri !== '/' && str_ends_with($currentUri, '/')) {
     <title><?= e($pageTitle ?? APP_NAME) ?></title>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%233b82f6'/%3E%3Ctext x='16' y='22' font-family='Inter' font-size='18' font-weight='bold' fill='white' text-anchor='middle'%3EC%3C/text%3E%3C/svg%3E">
+    <link rel="icon" type="image/png" href="<?= asset('images/icons/favicon-32.png') ?>">
 
     <!-- PWA: installable "app" experience on mobile -->
     <link rel="manifest" href="<?= APP_URL ?>/manifest.json">
@@ -36,7 +36,7 @@ if ($currentUri !== '/' && str_ends_with($currentUri, '/')) {
     <link rel="apple-touch-icon" href="<?= asset('images/icons/apple-touch-icon.png') ?>">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="<?= asset('css/style.css') ?>?v=1.1.1">
+    <link rel="stylesheet" href="<?= asset('css/style.css') ?>?v=1.1.2">
 
     <!-- SweetAlert2 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
@@ -53,11 +53,7 @@ if ($currentUri !== '/' && str_ends_with($currentUri, '/')) {
 <nav class="navbar" id="main-navbar">
     <div class="navbar-inner">
         <a href="<?= APP_URL ?>" class="navbar-brand">
-            <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="32" height="32" rx="8" fill="url(#brand-gradient)"/>
-                <path d="M8 16C8 11.5817 11.5817 8 16 8V8C20.4183 8 24 11.5817 24 16V24H16C11.5817 24 8 20.4183 8 16V16Z" fill="white" fill-opacity="0.9"/>
-                <defs><linearGradient id="brand-gradient" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#3b82f6"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs>
-            </svg>
+            <img src="<?= asset('images/icons/logo-navbar.png') ?>" alt="<?= e(APP_NAME) ?>" width="32" height="32">
             <?= e(APP_NAME) ?>
         </a>
 
