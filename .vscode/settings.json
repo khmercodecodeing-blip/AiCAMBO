@@ -1,0 +1,6 @@
+{
+  "phpResolver.phpSnifferCommand": "c:\\xampp\\htdocs\\well\\vendor\\bin\\phpcs.bat",
+  "phpResolver.phpBeautifierCommand": "c:\\xampp\\htdocs\\well\\vendor\\bin\\phpcbf.bat",
+  "phpcs.executablePath": "c:\\xampp\\htdocs\\well\\vendor\\bin\\phpcs.bat",
+  "phpcbf.executablePath": "c:\\xampp\\htdocs\\well\\vendor\\bin\\phpcbf.bat"
+}

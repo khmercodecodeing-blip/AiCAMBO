@@ -1,0 +1,10 @@
+.env
+/storage/thumbnails/*
+!/storage/thumbnails/.gitkeep
+/vendor/
+/key/
+/keyffff/
+/Update/
+/Bakong Token/
+public/assets.zip
+public/error_log

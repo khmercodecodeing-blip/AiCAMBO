@@ -1,0 +1,14 @@
+{
+    "name": "coursehub/platform",
+    "description": "Course Selling Platform with KHQR Payment",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "KHQR\\": "khqr/src/"
+        }
+    },
+    "require": {
+        "php": ">=8.0"
+    }
+}
