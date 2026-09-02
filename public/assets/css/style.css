@@ -193,6 +193,35 @@ body::before {
     object-fit: contain;
 }
 
+/* Language Switcher */
+.lang-switcher {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    background: var(--bg-glass);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 3px;
+    margin-left: 4px;
+}
+
+.lang-switcher a {
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.lang-switcher a.active {
+    background: var(--gradient-primary);
+    color: #fff;
+}
+
+.lang-switcher a:hover {
+    color: var(--text-primary);
+}
+
 .navbar-links {
     display: flex;
     align-items: center;

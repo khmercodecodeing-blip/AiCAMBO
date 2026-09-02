@@ -54,8 +54,8 @@
 <section class="courses-section">
     <div class="container">
         <div class="section-header">
-            <h2>Courses & Digital Tools</h2>
-            <p>ទូទាត់ប្រាក់ដោយស្វ័យប្រវត្តិតាមរយៈ KHQR ដើម្បីទទួលបានការចូលរៀន ឬលីងភ្ជាប់ទាញយកកម្មវិធីភ្លាមៗ</p>
+            <h2><?= e(t('home.title')) ?></h2>
+            <p><?= e(t('home.subtitle')) ?></p>
         </div>
 
 

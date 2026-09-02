@@ -3,18 +3,18 @@
 <section class="courses-section">
     <div class="container">
         <div class="section-header">
-            <h2>All Tools</h2>
-            <p>ឧបករណ៍ឌីជីថលទាំងអស់ដែលអាចទិញបានភ្លាមៗ ទូទាត់ប្រាក់ដោយស្វ័យប្រវត្តិតាមរយៈ KHQR</p>
+            <h2><?= e(t('tools.title')) ?></h2>
+            <p><?= e(t('tools.subtitle')) ?></p>
         </div>
 
         <!-- Featured: Telegram Adder Pro (Tool Add Telegram) -->
         <a href="<?= APP_URL ?>/telegram-adder-pro" class="glass-card fade-in" style="display:flex;align-items:center;gap:16px;padding:20px 24px;margin-bottom:32px;border:1px solid var(--border-accent);text-decoration:none;">
             <div style="width:48px;height:48px;border-radius:12px;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.4rem;">🚀</div>
             <div style="flex:1;">
-                <div style="font-weight:700;color:var(--text-primary);font-size:1rem;">Tool Add Telegram — Telegram Adder Pro</div>
-                <div style="font-size:0.85rem;color:var(--text-secondary);">មើលគម្រោងតម្លៃ និងទាញយកកម្មវិធីបន្ថែមសមាជិក Telegram</div>
+                <div style="font-weight:700;color:var(--text-primary);font-size:1rem;"><?= e(t('tools.featured')) ?></div>
+                <div style="font-size:0.85rem;color:var(--text-secondary);"><?= e(t('tools.featured_desc')) ?></div>
             </div>
-            <span class="btn btn-ghost btn-sm" style="flex-shrink:0;">View Plans</span>
+            <span class="btn btn-ghost btn-sm" style="flex-shrink:0;"><?= e(t('tools.view_plans')) ?></span>
         </a>
 
         <?php if (empty($courses)): ?>
@@ -22,7 +22,7 @@
                 <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1" style="margin:0 auto 16px;">
                     <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
                 </svg>
-                <p class="text-muted">No other tools available yet. Check back soon!</p>
+                <p class="text-muted"><?= e(t('tools.empty')) ?></p>
             </div>
         <?php else: ?>
             <div class="course-grid">

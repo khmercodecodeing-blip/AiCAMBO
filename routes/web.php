@@ -106,6 +106,11 @@ $router->get('/manifest.json', function () {
     (new PageController())->manifest();
 });
 
+// Language switcher (Khmer / English)
+$router->get('/lang/{code}', function ($code) {
+    (new PageController())->setLanguage($code);
+});
+
 // Checkout form (GET)
 $router->get('/checkout', function () {
     (new PaymentController())->checkout();

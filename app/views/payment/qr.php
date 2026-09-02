@@ -13,7 +13,7 @@ $remainingSecs = max(0, $expiresAt - time());
     <link rel="manifest" href="<?= APP_URL ?>/manifest.json">
     <meta name="theme-color" content="#0a1628">
     <link rel="apple-touch-icon" href="<?= asset('images/icons/apple-touch-icon.png') ?>">
-    <link rel="stylesheet" href="<?= asset('css/style.css') ?>?v=1.1.2">
+    <link rel="stylesheet" href="<?= asset('css/style.css') ?>?v=1.2.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="<?= asset('js/qrcode.min.js') ?>"></script>
     <script>if (typeof QRCode === 'undefined') { document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>'); }</script>

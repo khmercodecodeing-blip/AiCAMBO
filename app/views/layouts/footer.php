@@ -2,9 +2,9 @@
 <footer class="footer">
     <div class="container">
         <p>&copy; <?= date('Y') ?> <?= e(APP_NAME) ?>. All rights reserved.</p>
-        <p class="mt-1" style="font-size:0.8rem;">Powered by Bakong KHQR • Telegram</p>
+        <p class="mt-1" style="font-size:0.8rem;"><?= e(t('footer.powered')) ?></p>
         <p class="mt-1" style="font-size:0.8rem;">
-            <a href="<?= APP_URL ?>/policy" style="color:var(--text-muted);">គោលការណ៍ឯកជនភាព &amp; មិនសងប្រាក់វិញ (Privacy &amp; Refund Policy)</a>
+            <a href="<?= APP_URL ?>/policy" style="color:var(--text-muted);"><?= e(t('footer.policy')) ?></a>
         </p>
     </div>
 </footer>
@@ -454,7 +454,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <script src="<?= asset('js/qrcode.min.js') ?>"></script>
 <script>if (typeof QRCode === 'undefined') { document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>'); }</script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="<?= asset('js/app.js') ?>?v=1.1.2"></script>
+<script src="<?= asset('js/app.js') ?>?v=1.2.0"></script>
 
 </body>
 </html>

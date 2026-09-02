@@ -17,6 +17,20 @@ class PageController
     }
 
     /**
+     * Switch the UI language and redirect back to where the user came from
+     */
+    public function setLanguage(string $code): void
+    {
+        $_SESSION['lang'] = in_array($code, ['km', 'en'], true) ? $code : 'km';
+
+        $referer = $_SERVER['HTTP_REFERER'] ?? '';
+        $target = (str_starts_with($referer, APP_URL)) ? $referer : APP_URL;
+
+        header('Location: ' . $target);
+        exit;
+    }
+
+    /**
      * Serve the PWA web app manifest so installed icon/name follow live config
      */
     public function manifest(): void

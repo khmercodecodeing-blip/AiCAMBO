@@ -133,6 +133,36 @@ function e(?string $str): string {
 }
 
 /**
+ * Current UI language ('km' or 'en'), stored in session, defaults to Khmer
+ */
+function current_lang(): string {
+    $lang = $_SESSION['lang'] ?? 'km';
+    return in_array($lang, ['km', 'en'], true) ? $lang : 'km';
+}
+
+/**
+ * Translate a UI string key for the current language, falling back to English then the key itself
+ */
+function t(string $key): string {
+    static $cache = [];
+    $lang = current_lang();
+
+    if (!isset($cache[$lang])) {
+        $file = APP_ROOT . "/config/lang/{$lang}.php";
+        $cache[$lang] = file_exists($file) ? require $file : [];
+    }
+    if (isset($cache[$lang][$key])) {
+        return $cache[$lang][$key];
+    }
+
+    if (!isset($cache['en'])) {
+        $file = APP_ROOT . '/config/lang/en.php';
+        $cache['en'] = file_exists($file) ? require $file : [];
+    }
+    return $cache['en'][$key] ?? $key;
+}
+
+/**
  * Redirect helper
  */
 function redirect(string $path): void {

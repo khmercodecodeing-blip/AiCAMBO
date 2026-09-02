@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= e($pageTitle ?? 'Admin') ?></title>
     <link rel="icon" type="image/png" href="<?= asset('images/icons/favicon-32.png') ?>">
-    <link rel="stylesheet" href="<?= asset('css/style.css') ?>?v=1.1.2">
+    <link rel="stylesheet" href="<?= asset('css/style.css') ?>?v=1.2.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script>window.APP_URL = '<?= APP_URL ?>';</script>
 </head>
