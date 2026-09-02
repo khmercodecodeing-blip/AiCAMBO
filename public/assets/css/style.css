@@ -1588,6 +1588,13 @@ select.form-control {
     }
 }
 
+/* ===========================================
+   MOBILE APP-STYLE BOTTOM TAB BAR
+   =========================================== */
+.bottom-nav {
+    display: none;
+}
+
 @media (max-width: 768px) {
     .hero h1 {
         font-size: 2rem;
@@ -1600,6 +1607,61 @@ select.form-control {
 
     .course-grid {
         grid-template-columns: 1fr;
+    }
+
+    body {
+        padding-bottom: 64px;
+    }
+
+    .bottom-nav {
+        display: flex;
+        align-items: stretch;
+        justify-content: space-around;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 64px;
+        background: rgba(10, 22, 40, 0.95);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-top: 1px solid var(--border-color);
+        z-index: 1500;
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .bottom-nav-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        font-size: 0.68rem;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        transition: var(--transition-fast);
+    }
+
+    .bottom-nav-item svg {
+        stroke: currentColor;
+    }
+
+    .bottom-nav-item.active {
+        color: var(--cyan-400);
+    }
+
+    /* Floating chat bubble replaced by the "Support" tab on mobile */
+    .chat-widget-container {
+        bottom: 78px;
+    }
+
+    .chat-widget-btn {
+        display: none;
     }
 
     .navbar-links {

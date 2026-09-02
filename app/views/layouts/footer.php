@@ -418,7 +418,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const btn = document.getElementById('chat-widget-btn');
     const card = document.getElementById('chat-widget-card');
     const closeBtn = document.getElementById('chat-widget-close');
-    
+    const bottomNavSupport = document.getElementById('bottom-nav-support');
+
+    if (bottomNavSupport && card) {
+        bottomNavSupport.addEventListener('click', (e) => {
+            e.stopPropagation();
+            card.classList.toggle('active');
+        });
+    }
+
     if (btn && card) {
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -433,7 +441,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         document.addEventListener('click', (e) => {
-            if (!card.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
+            const clickedSupport = bottomNavSupport && bottomNavSupport.contains(e.target);
+            if (!card.contains(e.target) && e.target !== btn && !btn.contains(e.target) && !clickedSupport) {
                 card.classList.remove('active');
             }
         });
@@ -445,7 +454,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <script src="<?= asset('js/qrcode.min.js') ?>"></script>
 <script>if (typeof QRCode === 'undefined') { document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>'); }</script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="<?= asset('js/app.js') ?>?v=1.0.8"></script>
+<script src="<?= asset('js/app.js') ?>?v=1.0.9"></script>
 
 </body>
 </html>
