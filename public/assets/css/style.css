@@ -1955,6 +1955,11 @@ select.form-control {
     opacity: 1;
 }
 
+/* Ensure SweetAlert2 popups always render above the custom payment modal overlay */
+.swal2-container {
+    z-index: 99999 !important;
+}
+
 .custom-modal-content {
     position: relative;
     width: 100%;
