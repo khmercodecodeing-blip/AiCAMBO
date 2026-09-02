@@ -1710,13 +1710,14 @@ select.form-control {
         background: rgba(34, 211, 238, 0.15);
     }
 
-    /* Floating chat bubble replaced by the "Support" tab on mobile */
+    /* Floating chat bubble replaced by the "Support" tab on mobile — !important needed
+       because footer.php's inline <style> (loaded after this file) also sets display:flex */
     .chat-widget-container {
         bottom: 78px;
     }
 
     .chat-widget-btn {
-        display: none;
+        display: none !important;
     }
 
     .navbar-links {

@@ -454,7 +454,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <script src="<?= asset('js/qrcode.min.js') ?>"></script>
 <script>if (typeof QRCode === 'undefined') { document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>'); }</script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="<?= asset('js/app.js') ?>?v=1.2.0"></script>
+<script src="<?= asset('js/app.js') ?>?v=1.2.1"></script>
 
 </body>
 </html>

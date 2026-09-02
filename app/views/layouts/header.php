@@ -36,7 +36,7 @@ if ($currentUri !== '/' && str_ends_with($currentUri, '/')) {
     <link rel="apple-touch-icon" href="<?= asset('images/icons/apple-touch-icon.png') ?>">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="<?= asset('css/style.css') ?>?v=1.2.0">
+    <link rel="stylesheet" href="<?= asset('css/style.css') ?>?v=1.2.1">
 
     <!-- SweetAlert2 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
@@ -94,8 +94,8 @@ if ($currentUri !== '/' && str_ends_with($currentUri, '/')) {
                 </a>
             <?php endif; ?>
             <div class="lang-switcher">
-                <a href="<?= APP_URL ?>/lang/km" class="<?= current_lang() === 'km' ? 'active' : '' ?>">ខ្មែរ</a>
-                <a href="<?= APP_URL ?>/lang/en" class="<?= current_lang() === 'en' ? 'active' : '' ?>">EN</a>
+                <a href="<?= APP_URL ?>/lang/km" class="<?= current_lang() === 'km' ? 'active' : '' ?>">🇰🇭 ខ្មែរ</a>
+                <a href="<?= APP_URL ?>/lang/en" class="<?= current_lang() === 'en' ? 'active' : '' ?>">🇬🇧 EN</a>
             </div>
         </div>
     </div>
@@ -127,7 +127,7 @@ if ($currentUri !== '/' && str_ends_with($currentUri, '/')) {
         <span><?= e(t('nav.support')) ?></span>
     </button>
     <a href="<?= APP_URL ?>/lang/<?= current_lang() === 'km' ? 'en' : 'km' ?>" class="bottom-nav-item">
-        <span class="bottom-nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
+        <span class="bottom-nav-icon" style="font-size:1.1rem;"><?= current_lang() === 'km' ? '🇰🇭' : '🇬🇧' ?></span>
         <span><?= current_lang() === 'km' ? 'ខ្មែរ' : 'EN' ?></span>
     </a>
 </nav>
