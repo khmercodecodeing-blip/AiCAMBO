@@ -10,6 +10,9 @@ $remainingSecs = max(0, $expiresAt - time());
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= e($pageTitle) ?></title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%233b82f6'/%3E%3Ctext x='16' y='22' font-family='Inter' font-size='18' font-weight='bold' fill='white' text-anchor='middle'%3EC%3C/text%3E%3C/svg%3E">
+    <link rel="manifest" href="<?= APP_URL ?>/manifest.json">
+    <meta name="theme-color" content="#0a1628">
+    <link rel="apple-touch-icon" href="<?= asset('images/icons/apple-touch-icon.png') ?>">
     <link rel="stylesheet" href="<?= asset('css/style.css') ?>?v=1.0.8">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="<?= asset('js/qrcode.min.js') ?>"></script>

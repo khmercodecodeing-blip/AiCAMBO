@@ -96,6 +96,11 @@ $router->get('/policy', function () {
     (new PageController())->policy();
 });
 
+// PWA Web App Manifest (dynamic so it reflects APP_NAME / APP_URL)
+$router->get('/manifest.json', function () {
+    (new PageController())->manifest();
+});
+
 // Checkout form (GET)
 $router->get('/checkout', function () {
     (new PaymentController())->checkout();

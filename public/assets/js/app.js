@@ -10,7 +10,18 @@ document.addEventListener('DOMContentLoaded', () => {
     initPaymentMethodSelector();
     initDeleteConfirmations();
     initFlashMessages();
+    initServiceWorker();
 });
+
+/**
+ * Register the service worker so the site can be installed / used like an app on mobile
+ */
+function initServiceWorker() {
+    if (!('serviceWorker' in navigator) || !window.APP_URL) return;
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register(window.APP_URL + '/sw.js').catch(() => {});
+    });
+}
 
 /**
  * Mobile menu toggle
