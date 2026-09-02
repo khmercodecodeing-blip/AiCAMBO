@@ -42,6 +42,24 @@
                     </div>
                 </div>
 
+                <!-- Payment Method Selector -->
+                <div class="payment-method-list" style="width: 100%;">
+                    <div class="payment-method-option selected">
+                        <span class="pm-logo pm-logo-bakong">KHQR</span>
+                        <div class="pm-info">
+                            <span class="pm-name">Bakong KHQR</span>
+                        </div>
+                        <span class="badge badge-recommended">Recommended</span>
+                    </div>
+                    <div class="payment-method-option disabled" title="Coming Soon">
+                        <span class="pm-logo pm-logo-aba">ABA</span>
+                        <div class="pm-info">
+                            <span class="pm-name">ABA PayWay</span>
+                        </div>
+                        <span class="badge badge-coming-soon">Coming Soon</span>
+                    </div>
+                </div>
+
                 <!-- Promo Input -->
                 <div style="width: 100%; margin-bottom: 16px;">
                     <div style="display: flex; gap: 8px;">

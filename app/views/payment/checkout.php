@@ -69,10 +69,31 @@
                     <span class="label">Access</span>
                     <span>Telegram Group</span>
                 </div>
-                <div class="summary-row">
+                <div class="summary-row" style="border-bottom:none;padding-bottom:0;">
                     <span class="label">Payment Method</span>
-                    <span>Bakong KHQR</span>
                 </div>
+            </div>
+
+            <div class="payment-method-list">
+                <div class="payment-method-option selected">
+                    <span class="pm-logo pm-logo-bakong">KHQR</span>
+                    <div class="pm-info">
+                        <span class="pm-name">Bakong KHQR</span>
+                        <span class="text-muted" style="font-size:0.75rem;">Scan &amp; pay instantly via any banking app</span>
+                    </div>
+                    <span class="badge badge-recommended">Recommended</span>
+                </div>
+                <div class="payment-method-option disabled" title="Coming Soon">
+                    <span class="pm-logo pm-logo-aba">ABA</span>
+                    <div class="pm-info">
+                        <span class="pm-name">ABA PayWay</span>
+                        <span class="text-muted" style="font-size:0.75rem;">Card &amp; ABA account payment</span>
+                    </div>
+                    <span class="badge badge-coming-soon">Coming Soon</span>
+                </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:4px;">
                 <div class="summary-row" style="margin-top:8px;padding-top:16px;border-top:1px solid var(--border-color);">
                     <span class="label">Total</span>
                     <span style="font-size:1.3rem;font-weight:800;color:var(--cyan-400);"><?= format_price($course['price'], $course['currency']) ?></span>

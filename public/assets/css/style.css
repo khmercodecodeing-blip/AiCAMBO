@@ -927,9 +927,86 @@ select.form-control {
     color: var(--text-secondary);
 }
 
+/* Payment Method Selector */
+.payment-method-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 14px 0;
+}
+
+.payment-method-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: var(--bg-glass);
+    position: relative;
+}
+
+.payment-method-option.selected {
+    border-color: var(--cyan-400);
+    box-shadow: 0 0 0 1px var(--cyan-400) inset;
+}
+
+.payment-method-option.disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.payment-method-option .pm-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.payment-method-option .pm-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.pm-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 54px;
+    height: 30px;
+    padding: 0 10px;
+    border-radius: 6px;
+    font-weight: 800;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    flex-shrink: 0;
+}
+
+.pm-logo-bakong {
+    background: linear-gradient(135deg, #0b2f6b, #0f6cbd);
+}
+
+.pm-logo-aba {
+    background: linear-gradient(135deg, #7a1123, #a3162f);
+}
+
+.badge-recommended {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--green-400);
+}
+
+.badge-coming-soon {
+    background: rgba(100, 116, 139, 0.2);
+    color: var(--text-muted);
+}
+
 /* ===========================================
    COURSE DETAIL PAGE
    =========================================== */
+
 
 .course-detail {
     padding: 40px 0 80px;
