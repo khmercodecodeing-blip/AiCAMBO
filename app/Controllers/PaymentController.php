@@ -350,6 +350,22 @@ class PaymentController
     }
 
     /**
+     * Display printable payment receipt (only for completed invoices)
+     */
+    public function receipt(string $invoiceNo): void
+    {
+        $invoice = $this->invoiceModel->getByInvoiceNo($invoiceNo);
+
+        if (!$invoice || $invoice['payment_status'] !== 'completed') {
+            redirect('/payment/' . $invoiceNo);
+            return;
+        }
+
+        $pageTitle = 'Receipt — ' . APP_NAME;
+        require APP_ROOT . '/app/views/payment/receipt.php';
+    }
+
+    /**
      * Generate Telegram invite link and save to database
      */
     private function generateTelegramLink(array $invoice): ?string

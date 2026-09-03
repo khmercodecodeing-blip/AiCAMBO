@@ -73,8 +73,11 @@
             <?php endif; ?>
         <?php endif; ?>
 
-        <div class="mt-4">
-            <a href="<?= APP_URL ?>" class="btn btn-ghost">
+        <div class="mt-4" style="display:flex; gap:10px; flex-wrap:wrap;">
+            <a href="<?= APP_URL ?>/payment/receipt/<?= e($invoice['invoice_no']) ?>" target="_blank" class="btn btn-ghost" style="flex:1;">
+                🧾 View Receipt
+            </a>
+            <a href="<?= APP_URL ?>" class="btn btn-ghost" style="flex:1;">
                 ← Back to Courses
             </a>
         </div>

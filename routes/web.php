@@ -146,6 +146,11 @@ $router->get('/payment/success/{invoiceNo}', function ($invoiceNo) {
     (new PaymentController())->success($invoiceNo);
 });
 
+// Printable payment receipt
+$router->get('/payment/receipt/{invoiceNo}', function ($invoiceNo) {
+    (new PaymentController())->receipt($invoiceNo);
+});
+
 // ===========================
 // STUDENT AUTH ROUTES
 // ===========================
