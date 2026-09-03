@@ -142,6 +142,23 @@ Website: https://aicambo.store
     link.click();
     document.body.removeChild(link);
 }
+
+// Auto-download the receipt as soon as the success page loads (no manual click needed)
+(function autoDownloadReceipt() {
+    const invoiceNo = "<?= e($invoice['invoice_no']) ?>";
+    fetch(`<?= APP_URL ?>/payment/receipt/${invoiceNo}`)
+        .then(res => res.text())
+        .then(html => {
+            const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `Receipt_${invoiceNo}.html`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        })
+        .catch(err => console.error('Auto receipt download failed:', err));
+})();
 </script>
 
 <?php require APP_ROOT . '/app/views/layouts/footer.php'; ?>

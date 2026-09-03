@@ -86,7 +86,7 @@
                             </div>
 
                             <!-- Actions -->
-                            <div style="display:flex; gap:10px; align-items:center; flex-shrink:0;">
+                            <div style="display:flex; gap:10px; align-items:center; flex-shrink:0; flex-wrap:wrap;">
                                 <?php if (($purchase['product_type'] ?? 'course') === 'tool'): ?>
                                     <?php if (!empty($purchase['download_link'])): ?>
                                         <a href="<?= e($purchase['download_link']) ?>" target="_blank" class="btn btn-success btn-sm">
@@ -107,6 +107,9 @@
                                         ចូលក្រុម Telegram (Join Telegram)
                                     </a>
                                 <?php endif; ?>
+                                <a href="<?= APP_URL ?>/payment/receipt/<?= e($purchase['invoice_no']) ?>" target="_blank" class="btn btn-outline btn-sm">
+                                    🧾 វិក្កយបត្រ (Receipt)
+                                </a>
                             </div>
                         </div>
                     <?php endforeach; ?>
