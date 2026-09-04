@@ -5,8 +5,8 @@
 .hero-section {
     position: relative;
     padding: 80px 0 60px;
-    background: radial-gradient(circle at top right, rgba(6, 182, 212, 0.15), transparent 60%),
-                radial-gradient(circle at bottom left, rgba(59, 130, 246, 0.15), transparent 60%);
+    background: radial-gradient(circle at top right, rgba(14, 165, 233, 0.12), transparent 60%),
+                radial-gradient(circle at bottom left, rgba(37, 99, 235, 0.10), transparent 60%);
     overflow: hidden;
     text-align: center;
 }
@@ -15,7 +15,7 @@
     font-size: 2.8rem;
     font-weight: 800;
     line-height: 1.2;
-    background: linear-gradient(135deg, #3b82f6, #06b6d4, #10b981);
+    background: linear-gradient(135deg, #1d4ed8, #2563eb, #0ea5e9);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 20px;
@@ -65,30 +65,31 @@
 }
 
 .btn-premium-buy {
-    background: rgba(255, 255, 255, 0.05);
+    background: #ffffff;
     color: var(--text-primary) !important;
     font-weight: 700;
     padding: 14px 32px;
     border-radius: 12px;
     font-size: 1rem;
     text-decoration: none;
-    border: 1px solid var(--border-color);
+    border: 1px solid #cbd5e1;
     transition: all 0.3s ease;
     display: inline-flex;
     align-items: center;
     gap: 10px;
+    box-shadow: var(--shadow-sm);
 }
 
 .btn-premium-buy:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: #eff6ff;
     border-color: var(--border-accent);
     transform: translateY(-3px);
 }
 
 .badge-tool {
-    background: rgba(6, 182, 212, 0.15);
-    border: 1px solid rgba(6, 182, 212, 0.3);
-    color: var(--cyan-400);
+    background: rgba(37, 99, 235, 0.08);
+    border: 1px solid rgba(37, 99, 235, 0.25);
+    color: var(--blue-500);
     font-size: 0.75rem;
     padding: 4px 12px;
     border-radius: 50px;
@@ -107,19 +108,20 @@
 }
 
 .feature-card {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: #ffffff;
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-lg);
     padding: 30px;
     text-align: left;
     transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
 }
 
 .feature-card:hover {
-    background: rgba(255, 255, 255, 0.04);
-    border-color: rgba(59, 130, 246, 0.3);
+    background: #ffffff;
+    border-color: var(--border-accent);
     transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-glow);
 }
 
 .feature-icon {
@@ -151,7 +153,7 @@
 
 .pricing-section {
     padding: 60px 0;
-    background: rgba(0, 0, 0, 0.2);
+    background: #ffffff;
     border-top: 1px solid var(--border-color);
     border-bottom: 1px solid var(--border-color);
 }
@@ -165,7 +167,7 @@
 
 .pricing-card {
     position: relative;
-    background: rgba(30, 30, 46, 0.6);
+    background: #f8fafc;
     border: 1px solid var(--border-color);
     border-radius: var(--radius-lg);
     padding: 35px 24px;
@@ -183,9 +185,9 @@
 }
 
 .pricing-card.popular {
-    border-color: rgba(6, 182, 212, 0.5);
-    background: linear-gradient(180deg, rgba(6, 182, 212, 0.08) 0%, rgba(30, 30, 46, 0.6) 100%);
-    box-shadow: 0 5px 25px rgba(6, 182, 212, 0.1);
+    border-color: var(--blue-500);
+    background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
+    box-shadow: 0 8px 30px rgba(37, 99, 235, 0.15);
 }
 
 .pricing-card.popular::before {
@@ -193,8 +195,8 @@
     position: absolute;
     top: 14px;
     right: 14px;
-    background: linear-gradient(135deg, #06b6d4, #0891b2);
-    color: #1e1e2e;
+    background: linear-gradient(135deg, #2563eb, #0ea5e9);
+    color: #ffffff;
     font-size: 0.65rem;
     font-weight: 900;
     padding: 4px 10px;
@@ -257,11 +259,11 @@
 }
 
 .video-wrapper {
-    background: rgba(30, 30, 46, 0.4);
+    background: #ffffff;
     border: 1px solid var(--border-color);
     border-radius: var(--radius-lg);
     padding: 12px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    box-shadow: var(--shadow-lg);
     margin-bottom: 40px;
 }
 
@@ -274,11 +276,12 @@
 .step-item {
     display: flex;
     gap: 20px;
-    background: rgba(255, 255, 255, 0.01);
-    border: 1px solid rgba(255, 255, 255, 0.03);
+    background: #ffffff;
+    border: 1px solid var(--border-color);
     padding: 20px;
     border-radius: var(--radius-md);
     align-items: flex-start;
+    box-shadow: var(--shadow-sm);
 }
 
 .step-num {
@@ -345,8 +348,8 @@
     margin-right: auto;
     border-radius: var(--radius-lg);
     border: 1px solid var(--border-color);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 40px rgba(6, 182, 212, 0.15);
-    background: rgba(255, 255, 255, 0.01);
+    box-shadow: var(--shadow-lg);
+    background: #ffffff;
     padding: 10px;
     animation: fadeInUp 1s ease-out;
 }
@@ -361,7 +364,7 @@
 /* Support section styles */
 .support-section {
     padding: 80px 0;
-    background: rgba(0, 0, 0, 0.15);
+    background: #ffffff;
     border-top: 1px solid var(--border-color);
 }
 
@@ -373,7 +376,7 @@
 }
 
 .support-card {
-    background: rgba(255, 255, 255, 0.02);
+    background: #f8fafc;
     border: 1px solid var(--border-color);
     border-radius: var(--radius-lg);
     padding: 30px 24px;

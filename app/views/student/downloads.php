@@ -58,7 +58,7 @@
                             
                             <!-- Product Details -->
                             <div style="display:flex; align-items:center; gap:20px; flex:1; min-width:280px;">
-                                <div style="width:70px; height:70px; border-radius:var(--radius-sm); overflow:hidden; background:linear-gradient(135deg, #1a2940, #0f2847); flex-shrink:0; border:1px solid var(--border-color);">
+                                <div style="width:70px; height:70px; border-radius:var(--radius-sm); overflow:hidden; background:linear-gradient(135deg, #eff6ff, #e0f2fe); flex-shrink:0; border:1px solid var(--border-color);">
                                     <?php if (!empty($purchase['course_thumbnail'])): ?>
                                         <img src="<?= APP_URL ?>/storage/thumbnails/<?= e($purchase['course_thumbnail']) ?>" alt="<?= e($purchase['course_title']) ?>" style="width:100%; height:100%; object-fit:cover;">
                                     <?php else: ?>

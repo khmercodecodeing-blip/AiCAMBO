@@ -99,8 +99,8 @@ function copySuccessLicenseKey() {
                 showConfirmButton: false,
                 timer: 2000,
                 timerProgressBar: true,
-                background: '#0f1d32',
-                color: '#f1f5f9'
+                background: '#ffffff',
+                color: '#0f172a'
             });
             Toast.fire({
                 icon: 'success',

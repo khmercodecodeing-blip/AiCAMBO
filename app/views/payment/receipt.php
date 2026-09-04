@@ -10,15 +10,16 @@ $paidAt = !empty($invoice['paid_at']) ? date('d M Y, h:i A', strtotime($invoice[
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= e($pageTitle) ?></title>
     <link rel="icon" type="image/png" href="<?= asset('images/icons/favicon-32.png') ?>">
-    <link rel="stylesheet" href="<?= asset('css/style.css') ?>?v=1.2.1">
+    <link rel="stylesheet" href="<?= asset('css/style.css') ?>?v=2.0.0">
     <style>
         .receipt-wrap { max-width: 480px; margin: 40px auto; padding: 0 16px; }
         .receipt-card {
             background: #ffffff; color: #1e293b; border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.25); overflow: hidden;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 30px rgba(15,23,42,0.10); overflow: hidden;
         }
         .receipt-head {
-            background: #0a1628; color: #fff; padding: 24px 28px; text-align: center;
+            background: linear-gradient(135deg, #2563eb, #0ea5e9); color: #fff; padding: 24px 28px; text-align: center;
         }
         .receipt-head img { width: 40px; height: 40px; margin-bottom: 8px; }
         .receipt-head h2 { margin: 0; font-size: 1.1rem; letter-spacing: 0.5px; }
@@ -36,10 +37,10 @@ $paidAt = !empty($invoice['paid_at']) ? date('d M Y, h:i A', strtotime($invoice[
         .receipt-row .value { font-weight: 600; text-align: right; word-break: break-word; }
         .receipt-total {
             display: flex; justify-content: space-between; align-items: center;
-            margin-top: 16px; padding-top: 16px; border-top: 2px solid #0a1628;
+            margin-top: 16px; padding-top: 16px; border-top: 2px solid #2563eb;
         }
-        .receipt-total .label { font-size: 1rem; font-weight: 700; color: #0a1628; }
-        .receipt-total .value { font-size: 1.4rem; font-weight: 800; color: #0a1628; }
+        .receipt-total .label { font-size: 1rem; font-weight: 700; color: #0f172a; }
+        .receipt-total .value { font-size: 1.4rem; font-weight: 800; color: #2563eb; }
         .receipt-footer {
             text-align: center; padding: 16px 28px 24px; font-size: 0.75rem; color: #94a3b8;
         }
@@ -48,8 +49,8 @@ $paidAt = !empty($invoice['paid_at']) ? date('d M Y, h:i A', strtotime($invoice[
             flex: 1; text-align: center; padding: 10px; border-radius: 10px; font-size: 0.85rem;
             font-weight: 600; cursor: pointer; border: none; text-decoration: none;
         }
-        .btn-print { background: var(--gradient-primary, #3b82f6); color: #fff; }
-        .btn-back { background: transparent; color: #cbd5e1; border: 1px solid #334155 !important; }
+        .btn-print { background: var(--gradient-primary, #2563eb); color: #fff; }
+        .btn-back { background: #ffffff; color: #475569; border: 1px solid #cbd5e1 !important; }
 
         @media print {
             body { background: #fff !important; }

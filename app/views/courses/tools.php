@@ -30,7 +30,7 @@
                     <div class="glass-card course-card">
                         <div class="card-image">
                             <div style="position:absolute;top:12px;left:12px;z-index:2;display:flex;gap:6px;">
-                                <span style="background:rgba(16,185,129,0.2);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--green-400);border:1px solid rgba(16,185,129,0.3);font-size:0.65rem;padding:3px 8px;border-radius:20px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;">Tool</span>
+                                <span style="background:#dcfce7;color:#15803d;border:1px solid #bbf7d0;font-size:0.65rem;padding:3px 8px;border-radius:20px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;">Tool</span>
 
                                 <?php
                                 $discountPercent = 0;
@@ -39,7 +39,7 @@
                                 }
                                 ?>
                                 <?php if ($discountPercent > 0): ?>
-                                    <span style="background:rgba(239,68,68,0.25);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--red-400);border:1px solid rgba(239,68,68,0.4);font-size:0.65rem;padding:3px 8px;border-radius:20px;font-weight:800;letter-spacing:0.8px;">
+                                    <span style="background:#fee2e2;color:#b91c1c;border:1px solid #fecaca;font-size:0.65rem;padding:3px 8px;border-radius:20px;font-weight:800;letter-spacing:0.8px;">
                                         <?= $discountPercent ?>% OFF
                                     </span>
                                 <?php endif; ?>

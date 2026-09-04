@@ -67,7 +67,7 @@
                 <!-- Promo Input -->
                 <div style="width: 100%; margin-bottom: 16px;">
                     <div style="display: flex; gap: 8px;">
-                        <input type="text" id="modal-promo-input" placeholder="កូដបញ្ចុះតម្លៃ (Promo Code)" style="flex: 1; padding: 10px 14px; background: rgba(255,255,255,0.04); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary); font-family: inherit; font-size: 0.85rem; outline: none;" />
+                        <input type="text" id="modal-promo-input" placeholder="កូដបញ្ចុះតម្លៃ (Promo Code)" style="flex: 1; padding: 10px 14px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: var(--radius-md); color: var(--text-primary); font-family: inherit; font-size: 0.85rem; outline: none;" />
                         <button id="modal-promo-apply-btn" class="btn btn-sm btn-ghost" style="padding: 10px 16px; border-radius: var(--radius-md); font-size: 0.85rem; height: auto; margin: 0;">Apply</button>
                     </div>
                     <div id="modal-promo-msg" style="text-align: left; font-size: 0.75rem; margin-top: 6px; display: none;"></div>
@@ -94,7 +94,7 @@
             
             <!-- QR Receipt View (Hidden initially) -->
             <div id="modal-receipt-view" style="display: none; text-align: center;">
-                <div class="khqr-receipt-card" style="box-shadow: 0 4px 20px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); margin-bottom: 12px;">
+                <div class="khqr-receipt-card" style="box-shadow: 0 4px 20px rgba(15,23,42,0.12); border: 1px solid var(--border-color); margin-bottom: 12px;">
                     <!-- Red Header -->
                     <div class="khqr-receipt-header">
                         <div class="khqr-logo-text">KHQR</div>
@@ -127,7 +127,7 @@
 
                 <!-- Countdown -->
                 <div class="countdown" style="margin: 8px 0;">
-                    <div class="countdown-label" style="font-size:0.75rem; color:#64748b;">Time remaining</div>
+                    <div class="countdown-label" style="font-size:0.75rem; color:var(--text-muted);">Time remaining</div>
                     <div class="countdown-timer" id="modal-countdown-timer" style="font-size: 2rem; font-weight: 800; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">04:00</div>
                 </div>
 
@@ -233,20 +233,20 @@
     width: 56px;
     height: 56px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #3b82f6, #06b6d4);
+    background: linear-gradient(135deg, #2563eb, #0ea5e9);
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 4px 20px rgba(6, 182, 212, 0.4), 0 0 15px rgba(6, 182, 212, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.35);
+    border: 2px solid #ffffff;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .chat-widget-btn:hover {
     transform: scale(1.1);
-    box-shadow: 0 6px 24px rgba(6, 182, 212, 0.6), 0 0 25px rgba(6, 182, 212, 0.3);
+    box-shadow: 0 6px 24px rgba(37, 99, 235, 0.5);
 }
 
 .chat-widget-btn svg {
@@ -259,12 +259,10 @@
     bottom: 72px;
     right: 0;
     width: 310px;
-    background: rgba(15, 23, 42, 0.85);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
     border-radius: 16px;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 25px rgba(6, 182, 212, 0.15);
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.18);
     overflow: hidden;
     transform: translateY(20px) scale(0.95);
     opacity: 0;
@@ -279,9 +277,8 @@
 }
 
 .chat-widget-header {
-    background: linear-gradient(135deg, #1e293b, #0f172a);
+    background: linear-gradient(135deg, #2563eb, #0ea5e9);
     padding: 18px 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     display: flex;
     align-items: center;
     gap: 12px;
@@ -291,14 +288,13 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #3b82f6, #06b6d4);
+    background: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    color: #2563eb;
     font-weight: 800;
     font-size: 1.1rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .chat-widget-header-info {
@@ -308,13 +304,13 @@
 .chat-widget-title {
     font-size: 0.9rem;
     font-weight: 800;
-    color: #f8fafc;
+    color: #ffffff;
     margin: 0;
 }
 
 .chat-widget-status {
     font-size: 0.72rem;
-    color: #10b981;
+    color: #dcfce7;
     display: flex;
     align-items: center;
     gap: 4px;
@@ -327,7 +323,7 @@
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: #10b981;
+    background: #4ade80;
     animation: chatPulse 1.6s infinite;
 }
 
@@ -349,19 +345,19 @@
     align-items: center;
     gap: 12px;
     padding: 10px 12px;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
     border-radius: 12px;
-    color: #cbd5e1;
+    color: #0f172a;
     text-decoration: none;
     transition: all 0.2s ease;
     text-align: left;
 }
 
 .chat-widget-link:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(6, 182, 212, 0.3);
-    color: #f8fafc;
+    background: #eff6ff;
+    border-color: rgba(37, 99, 235, 0.35);
+    color: #1d4ed8;
     transform: translateX(3px);
 }
 
@@ -399,7 +395,7 @@
     right: 14px;
     background: transparent;
     border: none;
-    color: #64748b;
+    color: rgba(255, 255, 255, 0.8);
     font-size: 1.3rem;
     cursor: pointer;
     line-height: 1;
@@ -409,7 +405,7 @@
 }
 
 .chat-widget-close:hover {
-    color: #f8fafc;
+    color: #ffffff;
 }
 </style>
 
@@ -454,7 +450,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <script src="<?= asset('js/qrcode.min.js') ?>"></script>
 <script>if (typeof QRCode === 'undefined') { document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>'); }</script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="<?= asset('js/app.js') ?>?v=1.2.1"></script>
+<script src="<?= asset('js/app.js') ?>?v=2.0.0"></script>
 
 </body>
 </html>

@@ -19,7 +19,7 @@
         </p>
 
         <!-- Features list -->
-        <div style="text-align:left; background:rgba(255,255,255,0.02); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:16px; margin-bottom:30px;">
+        <div style="text-align:left; background:var(--bg-glass); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:16px; margin-bottom:30px;">
             <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:12px;">
                 <span style="color:var(--green-400); font-weight:bold; font-size:1.1rem; line-height:1;">✓</span>
                 <span style="font-size:0.85rem; color:var(--text-secondary);">រក្សាទុកប្រវត្តិនៃការទិញ និងទាញយក</span>
@@ -38,7 +38,7 @@
             <!-- Helper for local developer if GOOGLE_CLIENT_ID is not configured in .env -->
             <div class="alert alert-error" style="text-align:left; font-size:0.8rem; line-height:1.4; border-radius:var(--radius-md); border:1px solid rgba(239,68,68,0.25); background:rgba(239,68,68,0.08); padding:16px; margin-bottom:20px;">
                 <strong style="display:block; margin-bottom:6px; color:var(--red-400);">⚠️ Developer Notice: Google OAuth not configured</strong>
-                សូមបន្ថែម <code style="background:rgba(0,0,0,0.3); padding:2px 6px; border-radius:4px; font-family:monospace; color:#fff;">GOOGLE_CLIENT_ID</code> នៅក្នុងឯកសារ <code style="background:rgba(0,0,0,0.3); padding:2px 6px; border-radius:4px; font-family:monospace; color:#fff;">.env</code> ដើម្បីដំណើរការការចូលគណនី។
+                សូមបន្ថែម <code style="background:#fee2e2; padding:2px 6px; border-radius:4px; font-family:monospace; color:#991b1b;">GOOGLE_CLIENT_ID</code> នៅក្នុងឯកសារ <code style="background:#fee2e2; padding:2px 6px; border-radius:4px; font-family:monospace; color:#991b1b;">.env</code> ដើម្បីដំណើរការការចូលគណនី។
             </div>
         <?php else: ?>
             <!-- Google Sign-In Button Container -->
@@ -53,7 +53,7 @@
                 <div class="g_id_signin"
                      data-type="standard"
                      data-shape="rectangular"
-                     data-theme="dark"
+                     data-theme="outline"
                      data-text="signin_with"
                      data-size="large"
                      data-logo_alignment="left"

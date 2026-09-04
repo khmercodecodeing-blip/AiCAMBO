@@ -11,9 +11,9 @@ $remainingSecs = max(0, $expiresAt - time());
     <title><?= e($pageTitle) ?></title>
     <link rel="icon" type="image/png" href="<?= asset('images/icons/favicon-32.png') ?>">
     <link rel="manifest" href="<?= APP_URL ?>/manifest.json">
-    <meta name="theme-color" content="#0a1628">
+    <meta name="theme-color" content="#2563eb">
     <link rel="apple-touch-icon" href="<?= asset('images/icons/apple-touch-icon.png') ?>">
-    <link rel="stylesheet" href="<?= asset('css/style.css') ?>?v=1.2.1">
+    <link rel="stylesheet" href="<?= asset('css/style.css') ?>?v=2.0.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="<?= asset('js/qrcode.min.js') ?>"></script>
     <script>if (typeof QRCode === 'undefined') { document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>'); }</script>
@@ -35,7 +35,7 @@ $remainingSecs = max(0, $expiresAt - time());
     <div class="custom-modal-content fade-in" style="transform: scale(1); margin: 0 auto; text-align: center; max-width: 320px; box-shadow: var(--shadow-lg); padding: 12px 14px;">
         
         <!-- The KHQR Receipt Card -->
-        <div class="khqr-receipt-card" style="box-shadow: 0 4px 20px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); margin-bottom: 10px; max-width: 290px;">
+        <div class="khqr-receipt-card" style="box-shadow: 0 4px 20px rgba(15,23,42,0.12); border: 1px solid var(--border-color); margin-bottom: 10px; max-width: 290px;">
             <!-- Red Header -->
             <div class="khqr-receipt-header" style="padding: 8px 16px;">
                 <div class="khqr-logo-text" style="font-size: 1.1rem;">KHQR</div>
@@ -70,7 +70,7 @@ $remainingSecs = max(0, $expiresAt - time());
 
         <!-- Countdown -->
         <div class="countdown" style="margin: 4px 0;">
-            <div class="countdown-label" style="font-size:0.75rem; color:#64748b;">Time remaining</div>
+            <div class="countdown-label" style="font-size:0.75rem; color:var(--text-muted);">Time remaining</div>
             <div class="countdown-timer" id="countdown-timer" data-remaining="<?= $remainingSecs ?>" style="font-size: 1.6rem; font-weight: 800; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
                 --:--
             </div>
@@ -86,7 +86,7 @@ $remainingSecs = max(0, $expiresAt - time());
             <span>Checking payment status...</span>
         </div>
 
-        <p class="text-muted mt-2" style="font-size: 0.75rem; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 8px; line-height: 1.4;">
+        <p class="text-muted mt-2" style="font-size: 0.75rem; margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 8px; line-height: 1.4;">
             Invoice: <?= e($invoice['invoice_no']) ?>
             <br>
             Plan: <?= e($invoice['course_title']) ?>

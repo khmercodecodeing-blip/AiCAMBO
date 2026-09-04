@@ -55,7 +55,7 @@
                     </div>
                     <div class="price-label">One-time payment</div>
 
-                    <div style="font-size:0.85rem;color:var(--text-secondary);display:flex;align-items:center;justify-content:center;gap:6px;margin:16px 0;padding:8px;background:rgba(255,255,255,0.03);border-radius:var(--radius-sm);border:1px solid var(--border-color);">
+                    <div style="font-size:0.85rem;color:var(--text-secondary);display:flex;align-items:center;justify-content:center;gap:6px;margin:16px 0;padding:8px;background:var(--bg-glass);border-radius:var(--radius-sm);border:1px solid var(--border-color);">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--cyan-400);"><path d="M17 21v-2a4 4 0 0 0-3-3H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                         <span><strong><?= (int) ($course['student_count'] ?? 0) ?></strong> Enrolled</span>
                     </div>

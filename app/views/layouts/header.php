@@ -28,15 +28,15 @@ if ($currentUri !== '/' && str_ends_with($currentUri, '/')) {
 
     <!-- PWA: installable "app" experience on mobile -->
     <link rel="manifest" href="<?= APP_URL ?>/manifest.json">
-    <meta name="theme-color" content="#0a1628">
+    <meta name="theme-color" content="#2563eb">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="<?= e(APP_NAME) ?>">
     <link rel="apple-touch-icon" href="<?= asset('images/icons/apple-touch-icon.png') ?>">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="<?= asset('css/style.css') ?>?v=1.2.1">
+    <link rel="stylesheet" href="<?= asset('css/style.css') ?>?v=2.0.0">
 
     <!-- SweetAlert2 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">

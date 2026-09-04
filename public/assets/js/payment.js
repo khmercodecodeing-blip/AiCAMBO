@@ -30,7 +30,7 @@ function initQRCode() {
             correctLevel: QRCode.CorrectLevel.M,
         });
     } else {
-        container.innerHTML = '<p style="color:#94a3b8;padding:20px;">QR Code library not loaded</p>';
+        container.innerHTML = '<p style="color:#64748b;padding:20px;">QR Code library not loaded</p>';
     }
 }
 
@@ -104,10 +104,10 @@ function handleExpired() {
             text: 'The payment time has expired. Please try again.',
             icon: 'error',
             confirmButtonText: 'Back to Courses',
-            confirmButtonColor: '#3b82f6',
-            background: '#0f1d32',
-            color: '#f1f5f9',
-            backdrop: 'rgba(0,0,0,0.7)',
+            confirmButtonColor: '#2563eb',
+            background: '#ffffff',
+            color: '#0f172a',
+            backdrop: 'rgba(15,23,42,0.5)',
         }).then(() => {
             window.location.href = window.APP_URL || '/web';
         });
@@ -208,7 +208,7 @@ function handlePaymentSuccess(data) {
         Swal.fire({
             title: '🎉 Payment Successful!',
             html: `
-                <div style="color:#94a3b8;">
+                <div style="color:#475569;">
                     <p style="margin-bottom:16px;">Your payment has been confirmed.</p>
                     ${data.telegram_link ? `
                         <p style="font-size:0.9rem;">Click below to join the course group:</p>
@@ -218,9 +218,9 @@ function handlePaymentSuccess(data) {
             icon: 'success',
             confirmButtonText: data.telegram_link ? '🚀 Join Telegram Group' : 'Continue',
             confirmButtonColor: '#0088cc',
-            background: '#0f1d32',
-            color: '#f1f5f9',
-            backdrop: 'rgba(0,0,0,0.7)',
+            background: '#ffffff',
+            color: '#0f172a',
+            backdrop: 'rgba(15,23,42,0.5)',
             allowOutsideClick: false,
         }).then(() => {
             if (data.telegram_link) {

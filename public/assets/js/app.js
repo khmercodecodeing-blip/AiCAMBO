@@ -490,8 +490,8 @@ function initPaymentMethodSelector() {
                         icon: 'info',
                         title: 'Coming Soon',
                         text: message,
-                        background: '#0f1d32',
-                        color: '#f1f5f9'
+                        background: '#ffffff',
+                        color: '#0f172a'
                     });
                 } else {
                     alert(message);
@@ -520,16 +520,16 @@ function initDeleteConfirmations() {
             if (typeof Swal !== 'undefined') {
                 Swal.fire({
                     title: 'Delete Confirmation',
-                    html: `<p style="color:#94a3b8;">Are you sure you want to delete <strong style="color:#f87171;">${name}</strong>? This action cannot be undone.</p>`,
+                    html: `<p style="color:#475569;">Are you sure you want to delete <strong style="color:#dc2626;">${name}</strong>? This action cannot be undone.</p>`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Yes, Delete',
                     cancelButtonText: 'Cancel',
-                    confirmButtonColor: '#ef4444',
-                    cancelButtonColor: '#374151',
-                    background: '#0f1d32',
-                    color: '#f1f5f9',
-                    backdrop: 'rgba(0,0,0,0.7)',
+                    confirmButtonColor: '#dc2626',
+                    cancelButtonColor: '#64748b',
+                    background: '#ffffff',
+                    color: '#0f172a',
+                    backdrop: 'rgba(15,23,42,0.5)',
                 }).then((result) => {
                     if (result.isConfirmed) {
                         window.location.href = btn.getAttribute('href');
