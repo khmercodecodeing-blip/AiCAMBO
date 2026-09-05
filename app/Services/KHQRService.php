@@ -18,15 +18,19 @@ class KHQRService
      * @param string $invoiceNo Invoice number (used as bill number for tracking)
      * @return array{qr: string, md5: string}
      */
-    public function generatePaymentQR(float $amount, string $invoiceNo): array
+    public function generatePaymentQR(float $amount, string $invoiceNo, ?string $paymentCurrency = null): array
     {
-        $currency = BAKONG_CURRENCY === 'KHR'
+        $paymentCurrency = $paymentCurrency ?? BAKONG_CURRENCY;
+        if (!in_array($paymentCurrency, ['USD', 'KHR'], true) || !is_finite($amount) || $amount <= 0) {
+            throw new \InvalidArgumentException('Unsupported currency or invalid payment amount.');
+        }
+        $currency = $paymentCurrency === 'KHR'
             ? KHQRData::CURRENCY_KHR
             : KHQRData::CURRENCY_USD;
 
-        // If KHR, amount must be integer
-        if ($currency === KHQRData::CURRENCY_KHR) {
-            $amount = (int) round($amount);
+        $scale = $paymentCurrency === 'KHR' ? 1 : 100;
+        if (abs($amount * $scale - round($amount * $scale)) > 0.000001) {
+            throw new \InvalidArgumentException('Invalid payment precision.');
         }
 
         // Sanitize merchant name and store label to conform to EMVCo alphanumeric standards
@@ -38,7 +42,9 @@ class KHQRService
             merchantName: $merchantName,
             merchantCity: BAKONG_MERCHANT_CITY,
             currency: $currency,
-            amount: $amount
+            amount: $amount,
+            billNumber: $invoiceNo,
+            storeLabel: $storeLabel
         );
 
         $result = BakongKHQR::generateIndividual($individualInfo);

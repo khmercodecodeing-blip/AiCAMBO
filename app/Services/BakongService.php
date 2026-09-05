@@ -55,15 +55,23 @@ class BakongService
      */
     public function verifyAmount(array $transactionData, float $expectedAmount, string $currency = 'USD'): bool
     {
-        // Transaction data structure varies; check common fields
         $txAmount = $transactionData['amount'] ?? $transactionData['transactionAmount'] ?? null;
+        $txCurrency = $transactionData['currency'] ?? null;
 
-        if ($txAmount === null) {
-            // If no amount in response, still consider valid (some responses don't include amount)
-            return true;
+        if (!is_numeric($txAmount) || !is_string($txCurrency)
+            || !in_array($currency, ['USD', 'KHR'], true)
+            || $txCurrency !== $currency || !is_finite($expectedAmount) || $expectedAmount <= 0) {
+            return false;
         }
 
-        // Allow small float precision differences
-        return abs((float)$txAmount - $expectedAmount) < 0.01;
+        $received = (float) $txAmount;
+        $scale = $currency === 'KHR' ? 1 : 100;
+        if (!is_finite($received) || $received <= 0
+            || abs($received * $scale - round($received * $scale)) > 0.000001
+            || abs($expectedAmount * $scale - round($expectedAmount * $scale)) > 0.000001) {
+            return false;
+        }
+
+        return round($received * $scale) === round($expectedAmount * $scale);
     }
 }

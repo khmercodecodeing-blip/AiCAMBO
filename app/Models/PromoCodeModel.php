@@ -93,7 +93,7 @@ class PromoCodeModel
     /**
      * Validate a promo code and calculate discount amount
      */
-    public function validateCode(string $code, float $originalPrice): array
+    public function validateCode(string $code, float $originalPrice, string $currency = 'USD'): array
     {
         $promo = $this->getByCode($code);
 
@@ -128,7 +128,9 @@ class PromoCodeModel
             $discountAmount = $originalPrice;
         }
 
-        $finalPrice = max(0.00, $originalPrice - $discountAmount);
+        $precision = $currency === 'KHR' ? 0 : 2;
+        $finalPrice = round(max(0.00, $originalPrice - $discountAmount), $precision);
+        $discountAmount = round($originalPrice - $finalPrice, $precision);
 
         return [
             'valid'           => true,

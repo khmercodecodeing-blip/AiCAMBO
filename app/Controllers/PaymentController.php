@@ -62,8 +62,8 @@ class PaymentController
             }
         }
 
-        if (!$course) {
-            flash('error', 'Course not found.');
+        if (!$course || !$course['is_active']) {
+            flash('error', 'Course not available.');
             redirect('/');
             return;
         }
@@ -75,7 +75,8 @@ class PaymentController
         try {
             $qrData = $this->khqrService->generatePaymentQR(
                 (float) $course['price'],
-                $invoiceNo
+                $invoiceNo,
+                $course['currency']
             );
         } catch (\Throwable $e) {
             error_log('KHQR Generation Error: ' . $e->getMessage());
@@ -91,27 +92,15 @@ class PaymentController
         $licenseKey = $_GET['license_key'] ?? null;
         $hardwareId = $_GET['hardware_id'] ?? null;
 
-        // Auto-generate license key if purchasing directly on the website for plans 1, 2, 3
-        if (in_array($courseId, [1, 2, 3]) && empty($licenseKey)) {
-            $plan_map = [1 => '1_month', 2 => '3_months', 3 => '1_year'];
-            $plan_id = $plan_map[$courseId] ?? '1_month';
-            
-            $plan_codes = [
-                "1_month"  => "A1",
-                "3_months" => "B3",
-                "1_year"   => "CY",
-            ];
-            $code = $plan_codes[$plan_id] ?? "A1";
-            try {
-                $rand = strtoupper(bin2hex(random_bytes(5)));
-            } catch (\Throwable $e) {
-                $rand = strtoupper(substr(md5(uniqid(rand(), true)), 0, 10));
+        try {
+            $licenseKey = \App\Services\LicenseClient::keyForPlan($courseId, $licenseKey);
+            if ($hardwareId !== null && (!is_string($hardwareId) || strlen($hardwareId) > 255)) {
+                throw new \InvalidArgumentException('Invalid device identifier.');
             }
-            $body = $code . $rand;
-            $secret = LICENSE_SIGNING_SECRET;
-            $sig = strtoupper(substr(hash_hmac('sha256', $body, $secret), 0, 4));
-            $raw = $body . $sig;
-            $licenseKey = sprintf("%s-%s-%s-%s", substr($raw, 0, 4), substr($raw, 4, 4), substr($raw, 8, 4), substr($raw, 12, 4));
+        } catch (\InvalidArgumentException $error) {
+            flash('error', $error->getMessage());
+            redirect('/');
+            return;
         }
 
         $this->invoiceModel->create([
@@ -185,7 +174,8 @@ class PaymentController
         try {
             $qrData = $this->khqrService->generatePaymentQR(
                 (float) $course['price'],
-                $invoiceNo
+                $invoiceNo,
+                $course['currency']
             );
         } catch (\Throwable $e) {
             error_log('KHQR Generation Error: ' . $e->getMessage());
@@ -205,6 +195,7 @@ class PaymentController
             'currency'    => $course['currency'],
             'qr_string'   => $qrData['qr'],
             'md5_hash'    => $qrData['md5'],
+            'license_key' => \App\Services\LicenseClient::keyForPlan($courseId),
         ]);
 
         // Redirect to QR display page
@@ -216,7 +207,7 @@ class PaymentController
      */
     public function showQR(string $invoiceNo): void
     {
-        $invoice = $this->invoiceModel->getByInvoiceNo($invoiceNo);
+        $invoice = $this->authorizedInvoice($invoiceNo);
 
         if (!$invoice) {
             http_response_code(404);
@@ -242,9 +233,10 @@ class PaymentController
     {
         header('Content-Type: application/json');
 
-        $invoice = $this->invoiceModel->getByInvoiceNo($invoiceNo);
+        $invoice = $this->authorizedInvoice($invoiceNo);
 
         if (!$invoice) {
+            http_response_code(404);
             echo json_encode(['status' => 'error', 'message' => 'Invoice not found']);
             return;
         }
@@ -253,6 +245,7 @@ class PaymentController
         if ($invoice['payment_status'] === 'completed') {
             echo json_encode([
                 'status'        => 'completed',
+                'delivery_status' => (new \App\Services\LicenseDeliveryService($this->invoiceModel))->deliver($invoice),
                 'product_type'  => $invoice['product_type'] ?? 'course',
                 'telegram_link' => $invoice['telegram_link'] ?? null,
                 'download_link' => $invoice['download_link'] ?? null,
@@ -338,7 +331,7 @@ class PaymentController
      */
     public function success(string $invoiceNo): void
     {
-        $invoice = $this->invoiceModel->getByInvoiceNo($invoiceNo);
+        $invoice = $this->authorizedInvoice($invoiceNo);
 
         if (!$invoice || $invoice['payment_status'] !== 'completed') {
             redirect('/payment/' . $invoiceNo);
@@ -346,7 +339,27 @@ class PaymentController
         }
 
         $pageTitle = 'Payment Successful — ' . APP_NAME;
+        $licenseDeliveryStatus = (new \App\Services\LicenseDeliveryService($this->invoiceModel))->deliver($invoice);
         require APP_ROOT . '/app/views/payment/success.php';
+    }
+
+    public function retryDelivery(string $invoiceNo): void
+    {
+        $invoice = $this->authorizedInvoice($invoiceNo);
+        if (!$invoice || $invoice['payment_status'] !== 'completed') {
+            http_response_code(404);
+            echo 'Purchase not found';
+            return;
+        }
+        if (!verify_csrf($_POST['csrf_token'] ?? '')) {
+            http_response_code(403);
+            echo 'Invalid request';
+            return;
+        }
+        $status = (new \App\Services\LicenseDeliveryService($this->invoiceModel))->deliver($invoice);
+        flash($status === 'delivered' ? 'success' : 'info', $status === 'delivered'
+            ? 'Your license is ready.' : 'Payment received. License delivery is pending; retries are limited to once per minute.');
+        redirect('/payment/success/' . $invoiceNo);
     }
 
     /**
@@ -354,7 +367,7 @@ class PaymentController
      */
     public function receipt(string $invoiceNo): void
     {
-        $invoice = $this->invoiceModel->getByInvoiceNo($invoiceNo);
+        $invoice = $this->authorizedInvoice($invoiceNo);
 
         if (!$invoice || $invoice['payment_status'] !== 'completed') {
             redirect('/payment/' . $invoiceNo);
@@ -363,6 +376,14 @@ class PaymentController
 
         $pageTitle = 'Receipt — ' . APP_NAME;
         require APP_ROOT . '/app/views/payment/receipt.php';
+    }
+
+    private function authorizedInvoice(string $invoiceNo): ?array
+    {
+        header('Cache-Control: private, no-store');
+        header('Referrer-Policy: no-referrer');
+        $invoice = $this->invoiceModel->getByInvoiceNo($invoiceNo);
+        return $invoice && \App\Services\PurchaseAccess::canView($invoice, $_SESSION) ? $invoice : null;
     }
 
     /**
@@ -431,7 +452,7 @@ class PaymentController
 
         if (!empty($promoCode)) {
             $promoModel = new \App\Models\PromoCodeModel();
-            $result = $promoModel->validateCode($promoCode, $finalAmount);
+            $result = $promoModel->validateCode($promoCode, $finalAmount, $course['currency']);
             if ($result['valid']) {
                 $discountAmount = $result['discount_amount'];
                 $finalAmount = $result['final_price'];
@@ -449,7 +470,8 @@ class PaymentController
         try {
             $qrData = $this->khqrService->generatePaymentQR(
                 $finalAmount,
-                $invoiceNo
+                $invoiceNo,
+                $course['currency']
             );
         } catch (\Throwable $e) {
             error_log('Quick KHQR Generation Error: ' . $e->getMessage());
@@ -473,6 +495,7 @@ class PaymentController
             'currency'         => $course['currency'],
             'qr_string'        => $qrData['qr'],
             'md5_hash'         => $qrData['md5'],
+            'license_key'      => \App\Services\LicenseClient::keyForPlan($courseId),
         ]);
 
         echo json_encode([
@@ -512,7 +535,7 @@ class PaymentController
         }
 
         $promoModel = new \App\Models\PromoCodeModel();
-        $result = $promoModel->validateCode($promoCode, (float)$course['price']);
+        $result = $promoModel->validateCode($promoCode, (float)$course['price'], $course['currency']);
 
         if (!$result['valid']) {
             echo json_encode(['status' => 'error', 'message' => $result['message']]);
@@ -532,68 +555,7 @@ class PaymentController
      */
     private function registerLicense(array $invoice): bool
     {
-        $license_key = $invoice['license_key'];
-        $hardware_id = $invoice['hardware_id'];
-        
-        // Parse plan days from license key prefix
-        $raw = strtoupper(str_replace('-', '', $license_key));
-        $days = 30; // default fallback
-        if (strlen($raw) === 16) {
-            $body = substr($raw, 0, 12);
-            $sig = substr($raw, 12, 4);
-            $secret = LICENSE_SIGNING_SECRET;
-            $expected = strtoupper(substr(hash_hmac('sha256', $body, $secret), 0, 4));
-            if ($sig === $expected) {
-                $code = substr($body, 0, 2);
-                if ($code === 'A1') $days = 30;
-                elseif ($code === 'B3') $days = 90;
-                elseif ($code === 'CY') $days = 365;
-            }
-        }
-
-        $apiUrl = APP_URL . '/key/api/register.php';
-        $apiKey = LICENSE_API_KEY;
-        $expiresAt = date('Y-m-d', strtotime("+$days days"));
-        
-        $payload = [
-            'api_key' => $apiKey,
-            'license_key' => $license_key,
-            'hardware_id' => $hardware_id ?? '',
-            'pc_name' => 'Web Purchased',
-            'customer_name' => $invoice['buyer_name'],
-            'plan' => $days . ' Days',
-            'amount' => $invoice['amount'],
-            'expires_at' => $expiresAt,
-            'transaction_ref' => $invoice['invoice_no']
-        ];
-        
-        $ch = curl_init($apiUrl);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Content-Type: application/json',
-            'User-Agent: WebCheckout'
-        ]);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-        
-        $response = curl_exec($ch);
-        $err = curl_error($ch);
-        curl_close($ch);
-        
-        if ($err) {
-            error_log("Failed to register license: " . $err);
-            return false;
-        }
-        
-        $resData = json_decode($response, true);
-        if (!$resData || !$resData['success']) {
-            error_log("License server API returned error: " . ($resData['message'] ?? 'Unknown error'));
-            return false;
-        }
-        
-        return true;
+        $current = $this->invoiceModel->getByInvoiceNo($invoice['invoice_no']);
+        return $current && (new \App\Services\LicenseDeliveryService($this->invoiceModel))->deliver($current) === 'delivered';
     }
 }

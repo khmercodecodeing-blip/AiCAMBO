@@ -4,3 +4,4 @@ deployment:
     - export DEPLOYPATH=/home/uhewwnouchsina7/public_html/
     - /bin/cp -R * $DEPLOYPATH
     - /bin/cp -R .htaccess $DEPLOYPATH
+    - if [ -d "$DEPLOYPATH/key/api" ]; then /bin/cp deployment/register.php "$DEPLOYPATH/key/api/register.php"; fi

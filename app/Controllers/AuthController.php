@@ -42,8 +42,14 @@ class AuthController
      */
     public function googleCallback(): void
     {
+        if (!\App\Services\GoogleIdentity::validCsrf($_COOKIE['g_csrf_token'] ?? null, $_POST['g_csrf_token'] ?? null)) {
+            flash('error', 'Invalid sign-in request. Please try again.');
+            redirect('/login');
+            return;
+        }
+
         $idToken = $_POST['credential'] ?? null;
-        if (!$idToken) {
+        if (!is_string($idToken) || $idToken === '') {
             flash('error', 'Authentication failed: No credential received.');
             redirect('/login');
             return;
@@ -69,9 +75,8 @@ class AuthController
             }
 
             $payload = json_decode($response, true);
-            if (isset($payload['error_description']) || !isset($payload['email'])) {
-                $err = $payload['error_description'] ?? 'Email not found in payload';
-                flash('error', 'Google Auth Error: ' . $err);
+            if (!is_array($payload) || !\App\Services\GoogleIdentity::validClaims($payload, GOOGLE_CLIENT_ID, time())) {
+                flash('error', 'Google account verification failed. Please sign in again.');
                 redirect('/login');
                 return;
             }
@@ -90,6 +95,7 @@ class AuthController
             ]);
 
             // Save details to Session
+            session_regenerate_id(true);
             $_SESSION['user_id']      = $userId;
             $_SESSION['user_email']    = $email;
             $_SESSION['user_name']     = $name;
@@ -118,6 +124,8 @@ class AuthController
         unset($_SESSION['user_email']);
         unset($_SESSION['user_name']);
         unset($_SESSION['user_picture']);
+        unset($_SESSION['purchase_invoices']);
+        session_regenerate_id(true);
 
         flash('success', 'ចាកចេញពីគណនីបានជោគជ័យ (Logged out successfully).');
         redirect('/');
@@ -128,6 +136,8 @@ class AuthController
      */
     public function myDownloads(): void
     {
+        header('Cache-Control: private, no-store');
+        header('Referrer-Policy: no-referrer');
         if (!isset($_SESSION['user_email'])) {
             $_SESSION['redirect_after_login'] = '/my-downloads';
             redirect('/login');
@@ -157,6 +167,8 @@ class AuthController
      */
     public function joinGroup(string $invoiceNo): void
     {
+        header('Cache-Control: private, no-store');
+        header('Referrer-Policy: no-referrer');
         if (!isset($_SESSION['user_email'])) {
             redirect('/login');
             return;

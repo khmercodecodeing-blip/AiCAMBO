@@ -146,6 +146,10 @@ $router->get('/payment/success/{invoiceNo}', function ($invoiceNo) {
     (new PaymentController())->success($invoiceNo);
 });
 
+$router->post('/payment/retry-delivery/{invoiceNo}', function ($invoiceNo) {
+    (new PaymentController())->retryDelivery($invoiceNo);
+});
+
 // Printable payment receipt
 $router->get('/payment/receipt/{invoiceNo}', function ($invoiceNo) {
     (new PaymentController())->receipt($invoiceNo);

@@ -51,6 +51,7 @@ class InvoiceModel
             ]
         );
 
+        \App\Services\PurchaseAccess::remember($invoiceNo);
         return $invoiceNo;
     }
 
@@ -74,7 +75,8 @@ class InvoiceModel
     public function getByMd5Hash(string $md5Hash): ?array
     {
         return $this->db->fetch(
-            "SELECT * FROM invoices WHERE md5_hash = :md5_hash",
+            "SELECT i.*, c.type as product_type, c.telegram_group_id
+             FROM invoices i JOIN courses c ON i.course_id = c.id WHERE i.md5_hash = :md5_hash",
             [':md5_hash' => $md5Hash]
         );
     }
@@ -95,6 +97,26 @@ class InvoiceModel
             ]
         );
         return $stmt->rowCount() > 0;
+    }
+
+    public function claimLicenseDelivery(string $invoiceNo): bool
+    {
+        return $this->db->query(
+            "UPDATE invoices SET license_delivery_status = 'processing', license_delivery_attempted_at = NOW()
+             WHERE invoice_no = :invoice_no AND payment_status = 'completed' AND license_key IS NOT NULL
+             AND license_delivery_status IN ('pending', 'processing')
+             AND (license_delivery_attempted_at IS NULL OR license_delivery_attempted_at < DATE_SUB(NOW(), INTERVAL 60 SECOND))",
+            [':invoice_no' => $invoiceNo]
+        )->rowCount() === 1;
+    }
+
+    public function finishLicenseDelivery(string $invoiceNo, bool $delivered): void
+    {
+        $this->db->query(
+            "UPDATE invoices SET license_delivery_status = :status
+             WHERE invoice_no = :invoice_no AND license_delivery_status = 'processing'",
+            [':invoice_no' => $invoiceNo, ':status' => $delivered ? 'delivered' : 'pending']
+        );
     }
 
     /**

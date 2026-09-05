@@ -87,6 +87,9 @@
 
                             <!-- Actions -->
                             <div style="display:flex; gap:10px; align-items:center; flex-shrink:0; flex-wrap:wrap;">
+                                <a href="<?= APP_URL ?>/payment/success/<?= e($purchase['invoice_no']) ?>" class="btn btn-outline btn-sm">
+                                    ព័ត៌មានការទិញ (Order Details)
+                                </a>
                                 <?php if (($purchase['product_type'] ?? 'course') === 'tool'): ?>
                                     <?php if (!empty($purchase['download_link'])): ?>
                                         <a href="<?= e($purchase['download_link']) ?>" target="_blank" class="btn btn-success btn-sm">

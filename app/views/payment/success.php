@@ -1,6 +1,25 @@
-<?php require APP_ROOT . '/app/views/layouts/header.php'; ?>
+<?php
+if (!isset($invoice) || !is_array($invoice)) {
+    http_response_code(404);
+    return;
+}
+$licenseDeliveryStatus = $licenseDeliveryStatus ?? 'pending';
+require APP_ROOT . '/app/views/layouts/header.php';
+?>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+.success-card { min-width: 0; overflow-wrap: anywhere; }
+.success-card h1 { font-size: 1.5rem; line-height: 1.35; }
+.success-card .payment-info-row { flex-wrap: wrap; gap: 8px; }
+.success-card .payment-info-row .value { min-width: 0; }
+.purchase-delivery { padding: 20px 0; margin-bottom: 20px; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); text-align: left; }
+.purchase-delivery p { margin: 8px 0 16px; color: var(--text-secondary); }
+.purchase-delivery form { margin: 0; }
+.purchase-delivery button { width: 100%; white-space: normal; min-height: 44px; height: auto; }
+.purchase-download { display: flex; justify-content: center; margin-bottom: 12px; white-space: normal; }
+</style>
 
 <div class="success-page">
     <div class="glass-card success-card fade-in">
@@ -12,7 +31,7 @@
         </div>
 
         <h1>Payment Successful!</h1>
-        <p class="subtitle">Your payment has been confirmed. You now have access to the <?= (($invoice['product_type'] ?? 'course') === 'tool') ? 'tool' : 'course' ?>.</p>
+        <p class="subtitle">ការបង់ប្រាក់របស់អ្នកបានបញ្ជាក់រួចរាល់។ Payment received.</p>
 
         <!-- Invoice Summary -->
         <div class="payment-info" style="margin-bottom:32px;">
@@ -28,9 +47,9 @@
                 <span class="label">Amount Paid</span>
                 <span class="value" style="color:var(--green-400);"><?= format_price($invoice['amount'], $invoice['currency']) ?></span>
             </div>
-            <?php if (!empty($invoice['license_key'])): ?>
+            <?php if (!empty($invoice['license_key']) && $licenseDeliveryStatus === 'delivered'): ?>
                 <div class="payment-info-row" style="flex-direction: column; align-items: flex-start; gap: 8px;">
-                    <div style="display: flex; justify-content: space-between; width: 100%;">
+                    <div style="display: flex; justify-content: space-between; width: 100%; flex-wrap: wrap; gap: 8px;">
                         <span class="label">License Key</span>
                         <span class="value" id="license-key-value" style="font-family: monospace; font-weight: bold; color: var(--cyan-400); letter-spacing: 0.5px;"><?= e($invoice['license_key']) ?></span>
                     </div>
@@ -43,18 +62,33 @@
                 </div>
             <?php endif; ?>
             <div class="payment-info-row">
-                <span class="label">Status</span>
+                <span class="label">Payment</span>
                 <span class="badge badge-completed">Completed</span>
             </div>
         </div>
 
-        <?php if (($invoice['product_type'] ?? 'course') === 'tool'): ?>
+        <?php if (!empty($invoice['license_key']) && $licenseDeliveryStatus !== 'delivered'): ?>
+            <section class="purchase-delivery" aria-labelledby="delivery-title">
+                <h2 id="delivery-title" style="font-size:1.1rem;">License កំពុងរង់ចាំប្រគល់</h2>
+                <p role="status">ប្រាក់បានទទួលរួចហើយ។ មិនចាំបាច់បង់ម្ដងទៀតទេ។</p>
+                <form method="post" action="<?= APP_URL ?>/payment/retry-delivery/<?= e($invoice['invoice_no']) ?>">
+                    <?= csrf_field() ?>
+                    <button type="submit" class="btn btn-primary">សាកល្បងប្រគល់ម្ដងទៀត (Retry Delivery)</button>
+                </form>
+            </section>
+        <?php endif; ?>
+
+        <?php if (($invoice['product_type'] ?? 'course') === 'tool' && !empty($invoice['download_link'])): ?>
+            <a class="btn btn-primary purchase-download" href="<?= e($invoice['download_link']) ?>" target="_blank" rel="noopener noreferrer">ទាញយកកម្មវិធី (Download Software)</a>
+        <?php endif; ?>
+
+        <?php if (($invoice['product_type'] ?? 'course') === 'tool' && !empty($invoice['license_key']) && $licenseDeliveryStatus === 'delivered'): ?>
             <!-- Download License Key TXT Button -->
             <button onclick="downloadKeyTxt()" class="telegram-btn" style="background: var(--gradient-primary); border: none; width: 100%; justify-content: center; cursor: pointer; display: inline-flex; align-items: center;" id="download-key-btn">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-4px;margin-right:6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 Download Key (.txt)
             </button>
-        <?php else: ?>
+        <?php elseif (($invoice['product_type'] ?? 'course') === 'course'): ?>
             <?php if (!empty($invoice['telegram_link'])): ?>
                 <!-- Telegram Join Button -->
                 <a href="<?= e($invoice['telegram_link']) ?>" target="_blank" class="telegram-btn" id="join-telegram-btn">
@@ -115,10 +149,11 @@ function copySuccessLicenseKey() {
 }
 
 function downloadKeyTxt() {
-    const invoiceNo = "<?= e($invoice['invoice_no']) ?>";
-    const productTitle = "<?= e($invoice['course_title']) ?>";
-    const licenseKey = "<?= e($invoice['license_key']) ?>";
-    const amountPaid = "<?= format_price($invoice['amount'], $invoice['currency']) ?>";
+    const invoiceNo = <?= json_encode($invoice['invoice_no'], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+    const productTitle = <?= json_encode($invoice['course_title'], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+    const licenseKey = <?= json_encode($licenseDeliveryStatus === 'delivered' ? ($invoice['license_key'] ?? '') : '', JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+    const amountPaid = <?= json_encode(format_price($invoice['amount'], $invoice['currency']), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+    if (!licenseKey) return;
     
     const fileContent = `===================================================
 TELEGRAM ADDER PRO - LICENSE KEY
@@ -147,8 +182,8 @@ Website: https://aicambo.store
 
 // Auto-download the receipt as a PDF as soon as the success page loads (no manual click needed)
 (function autoDownloadReceiptPdf() {
-    const invoiceNo = "<?= e($invoice['invoice_no']) ?>";
-    const receiptUrl = `<?= APP_URL ?>/payment/receipt/${invoiceNo}`;
+    const invoiceNo = <?= json_encode($invoice['invoice_no'], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+    const receiptUrl = <?= json_encode(APP_URL . '/payment/receipt/' . $invoice['invoice_no'], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 
     const iframe = document.createElement('iframe');
     iframe.style.position = 'fixed';

@@ -57,20 +57,16 @@ class WebhookController
         // Parse payload
         $payload = json_decode($rawBody, true);
 
-        if (!$payload) {
+        if (!is_array($payload)) {
             http_response_code(400);
             echo json_encode(['error' => 'Invalid JSON']);
             return;
         }
 
-        // Log incoming webhook for debugging
-        error_log('Bakong webhook received: ' . $rawBody);
-
         // Extract MD5 hash from payload
         $md5Hash = $payload['md5'] ?? $payload['hash'] ?? $payload['transactionId'] ?? null;
-        $amount  = $payload['amount'] ?? $payload['transactionAmount'] ?? null;
 
-        if (empty($md5Hash)) {
+        if (!is_string($md5Hash) || !preg_match('/^[a-f0-9]{32}$/i', $md5Hash)) {
             http_response_code(400);
             echo json_encode(['error' => 'Missing transaction identifier']);
             return;
@@ -88,18 +84,25 @@ class WebhookController
 
         // Prevent duplicate processing
         if ($invoice['payment_status'] === 'completed') {
+            $this->registerLicense($invoice);
             echo json_encode(['status' => 'already_processed']);
             return;
         }
 
-        // Verify amount if provided
-        if ($amount !== null) {
-            if (abs((float)$amount - (float)$invoice['amount']) > 0.01) {
-                error_log('Webhook: Amount mismatch. Expected: ' . $invoice['amount'] . ', Got: ' . $amount);
-                http_response_code(400);
-                echo json_encode(['error' => 'Amount mismatch']);
+        try {
+            $bakong = new BakongService();
+            $result = $bakong->checkTransactionByMD5($invoice['md5_hash']);
+            if (!$result['found'] || !is_array($result['data'])
+                || !$bakong->verifyAmount($result['data'], (float) $invoice['amount'], $invoice['currency'])) {
+                http_response_code(422);
+                echo json_encode(['error' => 'Payment not verified']);
                 return;
             }
+        } catch (\Throwable $error) {
+            error_log('Webhook payment verification unavailable');
+            http_response_code(503);
+            echo json_encode(['error' => 'Payment verification unavailable']);
+            return;
         }
 
         // Update invoice status (atomic)
@@ -121,13 +124,17 @@ class WebhookController
         }
 
         // Auto-register license if applicable
-        if (!empty($invoice['license_key']) && !empty($invoice['hardware_id'])) {
+        if (!empty($invoice['license_key'])) {
             $this->registerLicense($invoice);
         }
 
         // Generate Telegram invite link
         $telegramLink = null;
         try {
+            if (($invoice['product_type'] ?? '') !== 'course' || empty($invoice['telegram_group_id'])) {
+                echo json_encode(['status' => 'success', 'invoice_no' => $invoice['invoice_no']]);
+                return;
+            }
             $telegram = new TelegramService();
             $result = $telegram->createInviteLink($invoice['telegram_group_id'] ?? '', 10, 1);
 
@@ -147,7 +154,6 @@ class WebhookController
         echo json_encode([
             'status'        => 'success',
             'invoice_no'    => $invoice['invoice_no'],
-            'telegram_link' => $telegramLink,
         ]);
     }
 
@@ -156,68 +162,7 @@ class WebhookController
      */
     private function registerLicense(array $invoice): bool
     {
-        $license_key = $invoice['license_key'];
-        $hardware_id = $invoice['hardware_id'];
-        
-        // Parse plan days from license key prefix
-        $raw = strtoupper(str_replace('-', '', $license_key));
-        $days = 30; // default fallback
-        if (strlen($raw) === 16) {
-            $body = substr($raw, 0, 12);
-            $sig = substr($raw, 12, 4);
-            $secret = LICENSE_SIGNING_SECRET;
-            $expected = strtoupper(substr(hash_hmac('sha256', $body, $secret), 0, 4));
-            if ($sig === $expected) {
-                $code = substr($body, 0, 2);
-                if ($code === 'A1') $days = 30;
-                elseif ($code === 'B3') $days = 90;
-                elseif ($code === 'CY') $days = 365;
-            }
-        }
-
-        $apiUrl = APP_URL . '/key/api/register.php';
-        $apiKey = LICENSE_API_KEY;
-        $expiresAt = date('Y-m-d', strtotime("+$days days"));
-        
-        $payload = [
-            'api_key' => $apiKey,
-            'license_key' => $license_key,
-            'hardware_id' => $hardware_id,
-            'pc_name' => 'Web Purchased',
-            'customer_name' => $invoice['buyer_name'],
-            'plan' => $days . ' Days',
-            'amount' => $invoice['amount'],
-            'expires_at' => $expiresAt,
-            'transaction_ref' => $invoice['invoice_no']
-        ];
-        
-        $ch = curl_init($apiUrl);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Content-Type: application/json',
-            'User-Agent: WebCheckout'
-        ]);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-        
-        $response = curl_exec($ch);
-        $err = curl_error($ch);
-        curl_close($ch);
-        
-        if ($err) {
-            error_log("Failed to register license: " . $err);
-            return false;
-        }
-        
-        $resData = json_decode($response, true);
-        if (!$resData || !$resData['success']) {
-            error_log("License server API returned error: " . ($resData['message'] ?? 'Unknown error'));
-            return false;
-        }
-        
-        return true;
+        $current = $this->invoiceModel->getByInvoiceNo($invoice['invoice_no']);
+        return $current && (new \App\Services\LicenseDeliveryService($this->invoiceModel))->deliver($current) === 'delivered';
     }
 }

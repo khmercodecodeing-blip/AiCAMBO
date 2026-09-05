@@ -111,7 +111,7 @@ $paidAt = !empty($invoice['paid_at']) ? date('d M Y, h:i A', strtotime($invoice[
                 <span class="label">Payment Method</span>
                 <span class="value">KHQR (Bakong)</span>
             </div>
-            <?php if (!empty($invoice['license_key'])): ?>
+            <?php if (!empty($invoice['license_key']) && ($invoice['license_delivery_status'] ?? 'pending') === 'delivered'): ?>
             <div class="receipt-row">
                 <span class="label">License Key</span>
                 <span class="value" style="font-family:monospace;"><?= e($invoice['license_key']) ?></span>
