@@ -111,7 +111,8 @@ require APP_ROOT . '/app/views/layouts/header.php';
 
         <div class="mt-4" style="display:flex; gap:10px; flex-wrap:wrap;">
             <a href="<?= APP_URL ?>/payment/receipt/<?= e($invoice['invoice_no']) ?>" target="_blank" class="btn btn-ghost" style="flex:1;">
-                🧾 View Receipt
+                <svg class="ui-icon" width="18" height="18" aria-hidden="true" focusable="false"><use href="<?= APP_URL ?>/public/assets/images/icons/ui.svg#receipt-text"></use></svg>
+                <span>View Receipt</span>
             </a>
             <a href="<?= APP_URL ?>" class="btn btn-ghost" style="flex:1;">
                 ← Back to Courses

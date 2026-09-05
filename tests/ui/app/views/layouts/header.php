@@ -1,3 +1,10 @@
+<?php
+if (!empty($_GET['navigation'])) {
+    require dirname(__DIR__, 5) . '/app/views/layouts/header.php';
+    echo '<main>';
+    return;
+}
+?>
 <!doctype html>
 <html lang="km">
 <head>

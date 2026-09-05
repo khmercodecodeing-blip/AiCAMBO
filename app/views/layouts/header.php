@@ -16,7 +16,7 @@ if ($currentUri !== '/' && str_ends_with($currentUri, '/')) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?= e(current_lang()) ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,7 +36,7 @@ if ($currentUri !== '/' && str_ends_with($currentUri, '/')) {
     <link rel="apple-touch-icon" href="<?= asset('images/icons/apple-touch-icon.png') ?>">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="<?= asset('css/style.css') ?>?v=2.0.0">
+    <link rel="stylesheet" href="<?= asset('css/style.css') ?>?v=2.0.1">
 
     <!-- SweetAlert2 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
@@ -93,9 +93,10 @@ if ($currentUri !== '/' && str_ends_with($currentUri, '/')) {
                      <?= e(t('nav.login')) ?>
                 </a>
             <?php endif; ?>
-            <div class="lang-switcher">
-                <a href="<?= APP_URL ?>/lang/km" class="<?= current_lang() === 'km' ? 'active' : '' ?>">🇰🇭 ខ្មែរ</a>
-                <a href="<?= APP_URL ?>/lang/en" class="<?= current_lang() === 'en' ? 'active' : '' ?>">🇬🇧 EN</a>
+            <div class="lang-switcher" role="group" aria-label="<?= current_lang() === 'km' ? 'ភាសា' : 'Language' ?>">
+                <svg class="ui-icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="<?= asset('images/icons/ui.svg') ?>#languages"></use></svg>
+                <a href="<?= APP_URL ?>/lang/km" lang="km" hreflang="km" title="ភាសាខ្មែរ" aria-current="<?= current_lang() === 'km' ? 'true' : 'false' ?>" class="<?= current_lang() === 'km' ? 'active' : '' ?>">ខ្មែរ</a>
+                <a href="<?= APP_URL ?>/lang/en" lang="en" hreflang="en" title="English" aria-current="<?= current_lang() === 'en' ? 'true' : 'false' ?>" class="<?= current_lang() === 'en' ? 'active' : '' ?>">EN</a>
             </div>
         </div>
     </div>
@@ -126,8 +127,8 @@ if ($currentUri !== '/' && str_ends_with($currentUri, '/')) {
         <span class="bottom-nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></span>
         <span><?= e(t('nav.support')) ?></span>
     </button>
-    <a href="<?= APP_URL ?>/lang/<?= current_lang() === 'km' ? 'en' : 'km' ?>" class="bottom-nav-item">
-        <span class="bottom-nav-icon" style="font-size:1.1rem;"><?= current_lang() === 'km' ? '🇰🇭' : '🇬🇧' ?></span>
+    <a href="<?= APP_URL ?>/lang/<?= current_lang() === 'km' ? 'en' : 'km' ?>" class="bottom-nav-item" aria-label="<?= current_lang() === 'km' ? 'ប្ដូរទៅភាសាអង់គ្លេស' : 'Switch to Khmer' ?>" title="<?= current_lang() === 'km' ? 'ប្ដូរទៅភាសាអង់គ្លេស' : 'Switch to Khmer' ?>">
+        <span class="bottom-nav-icon"><svg class="ui-icon" width="20" height="20" aria-hidden="true" focusable="false"><use href="<?= asset('images/icons/ui.svg') ?>#languages"></use></svg></span>
         <span><?= current_lang() === 'km' ? 'ខ្មែរ' : 'EN' ?></span>
     </a>
 </nav>

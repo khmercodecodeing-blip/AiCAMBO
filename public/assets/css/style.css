@@ -182,6 +182,14 @@ body::before {
 }
 
 /* Language Switcher */
+.ui-icon {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    vertical-align: middle;
+}
+
 .lang-switcher {
     display: flex;
     align-items: center;
@@ -194,6 +202,11 @@ body::before {
 }
 
 .lang-switcher a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 54px;
+    min-height: 32px;
     padding: 4px 10px;
     border-radius: 16px;
     font-size: 0.75rem;
@@ -201,13 +214,27 @@ body::before {
     color: var(--text-muted);
 }
 
-.lang-switcher a.active {
+.lang-switcher > .ui-icon {
+    width: 16px;
+    height: 16px;
+    margin: 0 6px;
+    color: var(--text-secondary);
+}
+
+.lang-switcher a.active,
+.lang-switcher a.active:hover {
     background: var(--gradient-primary);
     color: #fff;
 }
 
 .lang-switcher a:hover {
     color: var(--text-primary);
+}
+
+.lang-switcher a:focus-visible,
+.bottom-nav-item:focus-visible {
+    outline: 2px solid var(--blue-500);
+    outline-offset: 2px;
 }
 
 .navbar-links {

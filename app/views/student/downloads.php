@@ -111,7 +111,8 @@
                                     </a>
                                 <?php endif; ?>
                                 <a href="<?= APP_URL ?>/payment/receipt/<?= e($purchase['invoice_no']) ?>" target="_blank" class="btn btn-outline btn-sm">
-                                    🧾 វិក្កយបត្រ (Receipt)
+                                    <svg class="ui-icon" width="18" height="18" aria-hidden="true" focusable="false"><use href="<?= asset('images/icons/ui.svg') ?>#receipt-text"></use></svg>
+                                    <span>វិក្កយបត្រ (Receipt)</span>
                                 </a>
                             </div>
                         </div>
