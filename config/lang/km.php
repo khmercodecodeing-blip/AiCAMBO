@@ -10,7 +10,7 @@ return [
     'nav.account'      => 'គណនី',
     'nav.support'      => 'ជំនួយ',
     'nav.home'         => 'ទំព័រដើម',
-    'nav.ai_accounts'  => 'Account AI Pro',
+    'nav.ai_accounts'  => 'គណនី AI Pro',
 
     'search.placeholder' => 'ស្វែងរក...',
 
@@ -22,7 +22,7 @@ return [
     'catalog.ai_subtitle' => 'គណនី AI Pro ពេញសិទ្ធិដូចជា Gemini Pro, ChatGPT Plus, Canva Pro និងផ្សេងៗទៀត ដំណើរការភ្លាមៗ',
     'catalog.ai_empty' => 'មិនទាន់មាន Account AI Pro នៅឡើយទេ។ សូមមកមើលម្តងទៀតពេលក្រោយ!',
     'catalog.tab_all'  => 'ទាំងអស់',
-    'catalog.tab_ai'   => 'Account AI Pro',
+    'catalog.tab_ai'   => 'គណនី AI Pro',
     'catalog.tab_tools'=> 'ឧបករណ៍',
     'catalog.tab_courses' => 'វគ្គសិក្សា',
     'catalog.courses_title' => 'វគ្គសិក្សាទាំងអស់',
@@ -30,7 +30,7 @@ return [
     'catalog.courses_empty' => 'មិនទាន់មានវគ្គសិក្សានៅឡើយទេ។',
     'catalog.tool' => 'កម្មវិធី',
     'catalog.course' => 'វគ្គសិក្សា',
-    'catalog.ai_badge' => 'AI Pro',
+    'catalog.ai_badge' => 'គណនី AI',
 
     'tools.title'      => 'ឧបករណ៍ទាំងអស់',
     'tools.subtitle'   => 'ឧបករណ៍ឌីជីថលទាំងអស់ដែលអាចទិញបានភ្លាមៗ ទូទាត់ប្រាក់ដោយស្វ័យប្រវត្តិតាមរយៈ KHQR',
