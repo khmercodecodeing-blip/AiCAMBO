@@ -9,6 +9,7 @@ use App\Controllers\CourseController;
 use App\Controllers\PaymentController;
 use App\Controllers\WebhookController;
 use App\Controllers\AdminController;
+use App\Controllers\QuantumVaultController;
 use App\Controllers\PageController;
 
 /**
@@ -154,6 +155,10 @@ $router->post('/payment/retry-delivery/{invoiceNo}', function ($invoiceNo) {
     (new PaymentController())->retryDelivery($invoiceNo);
 });
 
+$router->get('/payment/account/{invoiceNo}', function ($invoiceNo) {
+    (new PaymentController())->accountDownload($invoiceNo);
+});
+
 // Printable payment receipt
 $router->get('/payment/receipt/{invoiceNo}', function ($invoiceNo) {
     (new PaymentController())->receipt($invoiceNo);
@@ -201,6 +206,22 @@ $router->post('/webhook/bakong', function () {
 // ===========================
 
 $adminPrefix = '/' . ADMIN_PREFIX;
+
+$router->get($adminPrefix . '/quantumvault', function () {
+    (new QuantumVaultController())->index();
+});
+
+$router->post($adminPrefix . '/quantumvault/import', function () {
+    (new QuantumVaultController())->import();
+});
+
+$router->post($adminPrefix . '/quantumvault/recover', function () {
+    (new QuantumVaultController())->recover();
+});
+
+$router->post($adminPrefix . '/quantumvault/retry', function () {
+    (new QuantumVaultController())->retry();
+});
 
 $router->get($adminPrefix . '/login', function () {
     (new AdminController())->loginForm();

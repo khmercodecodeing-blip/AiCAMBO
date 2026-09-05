@@ -64,6 +64,24 @@ require APP_ROOT . '/app/views/layouts/header.php';
             </div>
         </div>
 
+        <?php if (!empty($invoice['qv_product_key'])): ?>
+            <section class="purchase-delivery" aria-labelledby="account-delivery-title" style="min-width:0;text-align:left;">
+                <h2 id="account-delivery-title" style="font-size:1.1rem;">ព័ត៌មាន Account (Account Details)</h2>
+                <?php if (($invoice['qv_status'] ?? '') === 'delivered' && !empty($invoice['delivered_stock'])): ?>
+                    <pre style="white-space:pre-wrap;overflow-wrap:anywhere;font-size:0.9rem;max-width:100%;padding:12px 0;"><?= e($invoice['delivered_stock']) ?></pre>
+                    <a class="btn btn-primary" href="<?= APP_URL ?>/payment/account/<?= e($invoice['invoice_no']) ?>">ទាញយក Account (.txt)</a>
+                <?php else: ?>
+                    <p role="status">ការបង់ប្រាក់បានទទួលរួចហើយ។ Account កំពុងរង់ចាំការប្រគល់។ សូមទាក់ទង Support ដោយផ្ដល់លេខ Invoice នេះ។ មិនចាំបាច់បង់ប្រាក់ម្ដងទៀតទេ។</p>
+                    <?php if (($invoice['qv_status'] ?? '') === 'pending'): ?>
+                        <form method="post" action="<?= APP_URL ?>/payment/retry-delivery/<?= e($invoice['invoice_no']) ?>">
+                            <?= csrf_field() ?>
+                            <button type="submit" class="btn btn-primary">ពិនិត្យការប្រគល់ Account (Check Delivery)</button>
+                        </form>
+                    <?php endif; ?>
+                <?php endif; ?>
+            </section>
+        <?php endif; ?>
+
         <?php if (!empty($invoice['license_key']) && $licenseDeliveryStatus !== 'delivered'): ?>
             <section class="purchase-delivery" aria-labelledby="delivery-title">
                 <h2 id="delivery-title" style="font-size:1.1rem;">ការចុះឈ្មោះ License កំពុងរង់ចាំ</h2>

@@ -1,4 +1,8 @@
 <?php require APP_ROOT . '/app/views/admin/layout_top.php'; ?>
+<?php
+$course = $course ?? null;
+$isQuantumVault = (int) ($course['id'] ?? 0) > 3 && !empty($course['qv_product_key']);
+?>
 
 <?php if ($msg = get_flash('error')): ?>
     <div class="alert alert-error"><?= e($msg) ?></div>
@@ -74,12 +78,18 @@
         </div>
 
         <div class="form-group" id="download-link-group">
-            <label class="form-label" for="download_link">Download Link *</label>
+            <label class="form-label" for="download_link">Download Link <?= $isQuantumVault ? '(Optional)' : '*' ?></label>
             <input type="text" id="download_link" name="download_link" class="form-control"
                    value="<?= e($course['download_link'] ?? '') ?>"
                    placeholder="e.g., https://example.com/files/tool.zip">
             <small class="text-muted" style="font-size:0.75rem;display:block;margin-top:4px;">
-                The link to download the tool after payment is completed.
+                <?php if ($isQuantumVault): ?>
+                    QuantumVault: <?= e($course['qv_product_key'] ?? '') ?>
+                    <?= e($course['qv_variant_key'] ?? '') ?>.
+                    Maximum supplier cost: <?= e($course['qv_max_cost'] ?? '') ?> USD.
+                <?php else: ?>
+                    The link to download the tool after payment is completed.
+                <?php endif; ?>
             </small>
         </div>
 
@@ -136,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (type === 'tool') {
             tgGroup.style.display = 'none';
             dlGroup.style.display = 'block';
-            document.getElementById('download_link').setAttribute('required', 'required');
+            document.getElementById('download_link').toggleAttribute('required', <?= $isQuantumVault ? 'false' : 'true' ?>);
             document.getElementById('telegram_group_id').removeAttribute('required');
             if (titleLabel) titleLabel.textContent = 'Tool Title *';
             if (titleInput) titleInput.placeholder = 'e.g., MT4 Auto Trader Bot';

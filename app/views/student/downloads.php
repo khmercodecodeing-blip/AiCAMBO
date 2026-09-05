@@ -90,7 +90,13 @@
                                 <a href="<?= APP_URL ?>/payment/success/<?= e($purchase['invoice_no']) ?>" class="btn btn-outline btn-sm">
                                     ព័ត៌មានការទិញ (Order Details)
                                 </a>
-                                <?php if (($purchase['product_type'] ?? 'course') === 'tool'): ?>
+                                <?php if (!empty($purchase['qv_product_key'])): ?>
+                                    <?php if (($purchase['qv_status'] ?? '') === 'delivered'): ?>
+                                        <a href="<?= APP_URL ?>/payment/account/<?= e($purchase['invoice_no']) ?>" class="btn btn-success btn-sm">ទាញយក Account (.txt)</a>
+                                    <?php else: ?>
+                                        <span role="status">Account delivery pending</span>
+                                    <?php endif; ?>
+                                <?php elseif (($purchase['product_type'] ?? 'course') === 'tool'): ?>
                                     <?php if (!empty($purchase['download_link'])): ?>
                                         <a href="<?= e($purchase['download_link']) ?>" target="_blank" class="btn btn-success btn-sm">
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-3px; margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>

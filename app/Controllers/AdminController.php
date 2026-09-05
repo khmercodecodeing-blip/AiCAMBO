@@ -107,6 +107,8 @@ class AdminController
         }
 
         $id = (int) ($_POST['id'] ?? 0);
+        $existingCourse = $id > 3 ? $this->courseModel->getById($id) : null;
+        $isQuantumVault = !empty($existingCourse['qv_product_key']);
         
         $originalPriceRaw = trim($_POST['original_price'] ?? '');
         $originalPrice = ($originalPriceRaw !== '') ? (float) $originalPriceRaw : null;
@@ -127,7 +129,9 @@ class AdminController
         // Validate based on product type
         $validationFailed = empty($data['title']) || $data['price'] <= 0 ||
             ($data['type'] === 'course' && empty($data['telegram_group_id'])) ||
-            ($data['type'] === 'tool' && empty($data['download_link']));
+            ($data['type'] === 'tool' && empty($data['download_link']) && !$isQuantumVault) ||
+            ($isQuantumVault && ($data['type'] !== 'tool' || $data['currency'] !== 'USD' ||
+                !is_finite($data['price']) || $data['price'] < (float) ($existingCourse['qv_max_cost'] ?? 0)));
 
         if ($validationFailed) {
             flash('error', 'Please fill in all required fields.');

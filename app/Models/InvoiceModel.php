@@ -30,10 +30,23 @@ class InvoiceModel
     public function create(array $data): string
     {
         $invoiceNo = $data['invoice_no'] ?? $this->generateInvoiceNo();
+        $supplierColumns = '';
+        $supplierValues = '';
+        $supplierParams = [];
+        if (!empty($data['qv_product_key'])) {
+            $supplierColumns = ', qv_product_key, qv_variant_key, qv_max_cost, qv_status';
+            $supplierValues = ', :qv_product_key, :qv_variant_key, :qv_max_cost, :qv_status';
+            $supplierParams = [
+                ':qv_product_key' => $data['qv_product_key'],
+                ':qv_variant_key' => $data['qv_variant_key'] ?? null,
+                ':qv_max_cost' => $data['qv_max_cost'],
+                ':qv_status' => 'pending',
+            ];
+        }
 
         $this->db->query(
-            "INSERT INTO invoices (invoice_no, course_id, buyer_name, buyer_phone, buyer_email, amount, promo_code, discount_amount, currency, payment_status, qr_string, md5_hash, license_key, hardware_id)
-             VALUES (:invoice_no, :course_id, :buyer_name, :buyer_phone, :buyer_email, :amount, :promo_code, :discount_amount, :currency, 'pending', :qr_string, :md5_hash, :license_key, :hardware_id)",
+            "INSERT INTO invoices (invoice_no, course_id, buyer_name, buyer_phone, buyer_email, amount, promo_code, discount_amount, currency, payment_status, qr_string, md5_hash, license_key, hardware_id$supplierColumns)
+             VALUES (:invoice_no, :course_id, :buyer_name, :buyer_phone, :buyer_email, :amount, :promo_code, :discount_amount, :currency, 'pending', :qr_string, :md5_hash, :license_key, :hardware_id$supplierValues)",
             [
                 ':invoice_no'      => $invoiceNo,
                 ':course_id'       => $data['course_id'],
@@ -48,7 +61,7 @@ class InvoiceModel
                 ':md5_hash'        => $data['md5_hash'] ?? null,
                 ':license_key'     => $data['license_key'] ?? null,
                 ':hardware_id'     => $data['hardware_id'] ?? null,
-            ]
+            ] + $supplierParams
         );
 
         \App\Services\PurchaseAccess::remember($invoiceNo);

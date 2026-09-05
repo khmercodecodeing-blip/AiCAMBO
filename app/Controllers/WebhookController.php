@@ -85,6 +85,7 @@ class WebhookController
         // Prevent duplicate processing
         if ($invoice['payment_status'] === 'completed') {
             $this->registerLicense($invoice);
+            (new \App\Services\QuantumVaultDeliveryService())->deliver($invoice);
             echo json_encode(['status' => 'already_processed']);
             return;
         }
@@ -112,6 +113,8 @@ class WebhookController
             echo json_encode(['status' => 'already_processed']);
             return;
         }
+
+        (new \App\Services\QuantumVaultDeliveryService())->deliver(array_replace($invoice, ['payment_status' => 'completed']));
 
         // Increment promo code uses if applied
         if (!empty($invoice['promo_code'])) {

@@ -68,6 +68,11 @@ class PaymentController
             return;
         }
 
+        $supplier = $this->supplierCheckout($course, (float) $course['price']);
+        if ($supplier === null) {
+            return;
+        }
+
         // Generate a unique invoice number first
         $invoiceNo = $this->invoiceModel->generateInvoiceNo();
 
@@ -115,7 +120,7 @@ class PaymentController
             'md5_hash'    => $qrData['md5'],
             'license_key' => $licenseKey,
             'hardware_id' => $hardwareId,
-        ]);
+        ] + $supplier);
 
         // Redirect to QR display page
         redirect('/payment/' . $invoiceNo);
@@ -167,6 +172,11 @@ class PaymentController
             return;
         }
 
+        $supplier = $this->supplierCheckout($course, (float) $course['price']);
+        if ($supplier === null) {
+            return;
+        }
+
         // Generate a unique invoice number first
         $invoiceNo = $this->invoiceModel->generateInvoiceNo();
 
@@ -196,7 +206,7 @@ class PaymentController
             'qr_string'   => $qrData['qr'],
             'md5_hash'    => $qrData['md5'],
             'license_key' => \App\Services\LicenseClient::keyForPlan($courseId),
-        ]);
+        ] + $supplier);
 
         // Redirect to QR display page
         redirect('/payment/' . $invoiceNo);
@@ -246,6 +256,7 @@ class PaymentController
             echo json_encode([
                 'status'        => 'completed',
                 'delivery_status' => (new \App\Services\LicenseDeliveryService($this->invoiceModel))->deliver($invoice),
+                'account_delivery_status' => (new \App\Services\QuantumVaultDeliveryService())->deliver($invoice),
                 'product_type'  => $invoice['product_type'] ?? 'course',
                 'telegram_link' => $invoice['telegram_link'] ?? null,
                 'download_link' => $invoice['download_link'] ?? null,
@@ -282,6 +293,7 @@ class PaymentController
                         $updated = $this->invoiceModel->updateStatus($invoiceNo, 'completed');
 
                         if ($updated) {
+                            (new \App\Services\QuantumVaultDeliveryService())->deliver(array_replace($invoice, ['payment_status' => 'completed']));
                             // Increment promo code uses if applied
                             if (!empty($invoice['promo_code'])) {
                                 try {
@@ -340,6 +352,10 @@ class PaymentController
 
         $pageTitle = 'Payment Successful — ' . APP_NAME;
         $licenseDeliveryStatus = (new \App\Services\LicenseDeliveryService($this->invoiceModel))->deliver($invoice);
+        (new \App\Services\QuantumVaultDeliveryService())->deliver($invoice);
+        if (!empty($invoice['qv_product_key'])) {
+            $invoice = $this->invoiceModel->getByInvoiceNo($invoiceNo) ?? $invoice;
+        }
         require APP_ROOT . '/app/views/payment/success.php';
     }
 
@@ -354,6 +370,13 @@ class PaymentController
         if (!verify_csrf($_POST['csrf_token'] ?? '')) {
             http_response_code(403);
             echo 'Invalid request';
+            return;
+        }
+        if (!empty($invoice['qv_product_key'])) {
+            $status = (new \App\Services\QuantumVaultDeliveryService())->deliver($invoice);
+            flash($status === 'delivered' ? 'success' : 'info', $status === 'delivered'
+                ? 'Account delivered.' : 'Payment received. Account delivery is pending; please contact support. Do not pay again.');
+            redirect('/payment/success/' . $invoiceNo);
             return;
         }
         $status = (new \App\Services\LicenseDeliveryService($this->invoiceModel))->deliver($invoice);
@@ -376,6 +399,38 @@ class PaymentController
 
         $pageTitle = 'Receipt — ' . APP_NAME;
         require APP_ROOT . '/app/views/payment/receipt.php';
+    }
+
+    public function accountDownload(string $invoiceNo): void
+    {
+        $invoice = $this->authorizedInvoice($invoiceNo);
+        if (!$invoice || $invoice['payment_status'] !== 'completed' || ($invoice['qv_status'] ?? '') !== 'delivered'
+            || empty($invoice['delivered_stock'])) {
+            http_response_code(404);
+            echo 'Account delivery not found';
+            return;
+        }
+        header('Content-Type: text/plain; charset=utf-8');
+        header('Content-Disposition: attachment; filename="account-details.txt"');
+        header('X-Content-Type-Options: nosniff');
+        echo $invoice['delivered_stock'];
+    }
+
+    private function supplierCheckout(array $course, float $amount, bool $json = false): ?array
+    {
+        try {
+            return \App\Services\QuantumVaultDeliveryService::checkout($course, $amount);
+        } catch (\Throwable $error) {
+            $message = 'This account is temporarily unavailable. Please try again later.';
+            if ($json) {
+                http_response_code(503);
+                echo json_encode(['status' => 'error', 'message' => $message]);
+            } else {
+                flash('error', $message);
+                redirect('/course/' . (int) $course['id']);
+            }
+            return null;
+        }
     }
 
     private function authorizedInvoice(string $invoiceNo): ?array
@@ -463,6 +518,11 @@ class PaymentController
             }
         }
 
+        $supplier = $this->supplierCheckout($course, $finalAmount, true);
+        if ($supplier === null) {
+            return;
+        }
+
         // Generate a unique invoice number first
         $invoiceNo = $this->invoiceModel->generateInvoiceNo();
 
@@ -496,7 +556,7 @@ class PaymentController
             'qr_string'        => $qrData['qr'],
             'md5_hash'         => $qrData['md5'],
             'license_key'      => \App\Services\LicenseClient::keyForPlan($courseId),
-        ]);
+        ] + $supplier);
 
         echo json_encode([
             'status'        => 'success',

@@ -63,4 +63,11 @@ $invoice = [
     'product_type' => 'tool', 'amount' => 7, 'currency' => 'USD',
     'license_key' => 'DEMO-ONLY-NOT-AKEY', 'download_link' => 'https://example.com/demo-download',
 ];
+if (isset($_GET['account'])) {
+    $invoice = array_replace($invoice, [
+        'course_title' => 'Demo Account - 1 Month', 'license_key' => null, 'download_link' => null,
+        'qv_product_key' => 'demo', 'qv_status' => in_array($_GET['state'] ?? '', ['pending', 'review', 'delivered'], true) ? $_GET['state'] : 'pending',
+        'delivered_stock' => "Email: demo@example.test\nPassword: DEMO-NOT-A-REAL-PASSWORD\nActivation link: https://example.test/activate/" . str_repeat('synthetic', 18),
+    ]);
+}
 require $root . '/app/views/payment/success.php';
