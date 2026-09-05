@@ -1,5 +1,5 @@
 <?php
-if (!isset($invoice) || !is_array($invoice)) {
+if (!isset($invoice) || !is_array($invoice) || ($invoice['payment_status'] ?? '') !== 'completed') {
     http_response_code(404);
     return;
 }
@@ -47,7 +47,7 @@ require APP_ROOT . '/app/views/layouts/header.php';
                 <span class="label">Amount Paid</span>
                 <span class="value" style="color:var(--green-400);"><?= format_price($invoice['amount'], $invoice['currency']) ?></span>
             </div>
-            <?php if (!empty($invoice['license_key']) && $licenseDeliveryStatus === 'delivered'): ?>
+            <?php if (!empty($invoice['license_key'])): ?>
                 <div class="payment-info-row" style="flex-direction: column; align-items: flex-start; gap: 8px;">
                     <div style="display: flex; justify-content: space-between; width: 100%; flex-wrap: wrap; gap: 8px;">
                         <span class="label">License Key</span>
@@ -69,11 +69,11 @@ require APP_ROOT . '/app/views/layouts/header.php';
 
         <?php if (!empty($invoice['license_key']) && $licenseDeliveryStatus !== 'delivered'): ?>
             <section class="purchase-delivery" aria-labelledby="delivery-title">
-                <h2 id="delivery-title" style="font-size:1.1rem;">License កំពុងរង់ចាំប្រគល់</h2>
-                <p role="status">ប្រាក់បានទទួលរួចហើយ។ មិនចាំបាច់បង់ម្ដងទៀតទេ។</p>
+                <h2 id="delivery-title" style="font-size:1.1rem;">ការចុះឈ្មោះ License កំពុងរង់ចាំ</h2>
+                <p role="status">Key របស់អ្នកបានបង្កើតរួចហើយ ប៉ុន្តែការចុះឈ្មោះលើ License Server មិនទាន់បានបញ្ជាក់។ មិនចាំបាច់បង់ប្រាក់ម្ដងទៀតទេ។</p>
                 <form method="post" action="<?= APP_URL ?>/payment/retry-delivery/<?= e($invoice['invoice_no']) ?>">
                     <?= csrf_field() ?>
-                    <button type="submit" class="btn btn-primary">សាកល្បងប្រគល់ម្ដងទៀត (Retry Delivery)</button>
+                    <button type="submit" class="btn btn-primary">សាកល្បងចុះឈ្មោះម្ដងទៀត (Retry Registration)</button>
                 </form>
             </section>
         <?php endif; ?>
@@ -82,7 +82,7 @@ require APP_ROOT . '/app/views/layouts/header.php';
             <a class="btn btn-primary purchase-download" href="<?= e($invoice['download_link']) ?>" target="_blank" rel="noopener noreferrer">ទាញយកកម្មវិធី (Download Software)</a>
         <?php endif; ?>
 
-        <?php if (($invoice['product_type'] ?? 'course') === 'tool' && !empty($invoice['license_key']) && $licenseDeliveryStatus === 'delivered'): ?>
+        <?php if (($invoice['product_type'] ?? 'course') === 'tool' && !empty($invoice['license_key'])): ?>
             <!-- Download License Key TXT Button -->
             <button onclick="downloadKeyTxt()" class="telegram-btn" style="background: var(--gradient-primary); border: none; width: 100%; justify-content: center; cursor: pointer; display: inline-flex; align-items: center;" id="download-key-btn">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-4px;margin-right:6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -151,7 +151,8 @@ function copySuccessLicenseKey() {
 function downloadKeyTxt() {
     const invoiceNo = <?= json_encode($invoice['invoice_no'], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
     const productTitle = <?= json_encode($invoice['course_title'], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
-    const licenseKey = <?= json_encode($licenseDeliveryStatus === 'delivered' ? ($invoice['license_key'] ?? '') : '', JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+    const licenseKey = <?= json_encode($invoice['license_key'] ?? '', JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+    const registrationStatus = <?= json_encode($licenseDeliveryStatus === 'delivered' ? 'CONFIRMED' : 'PENDING') ?>;
     const amountPaid = <?= json_encode(format_price($invoice['amount'], $invoice['currency']), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
     if (!licenseKey) return;
     
@@ -163,7 +164,8 @@ Invoice No:  ${invoiceNo}
 Product:     ${productTitle}
 License Key: ${licenseKey}
 Amount Paid: ${amountPaid}
-Status:      COMPLETED
+Payment:     COMPLETED
+Registration: ${registrationStatus}
 
 Thank you for your purchase!
 Please copy the License Key above and paste it into the Telegram Adder Pro app to activate.

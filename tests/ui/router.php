@@ -30,6 +30,7 @@ function csrf_field(): string { return '<input type="hidden" name="csrf_token" v
 $licenseDeliveryStatus = ($_GET['state'] ?? '') === 'delivered' ? 'delivered' : 'pending';
 $invoice = [
     'invoice_no' => 'INV-DEMO-ONLY', 'course_title' => 'Telegram Adder Pro - 1 Month',
+    'payment_status' => 'completed',
     'product_type' => 'tool', 'amount' => 7, 'currency' => 'USD',
     'license_key' => 'DEMO-ONLY-NOT-AKEY', 'download_link' => 'https://example.com/demo-download',
 ];

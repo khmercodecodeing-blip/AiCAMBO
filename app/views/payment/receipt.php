@@ -1,4 +1,8 @@
 <?php
+if (!isset($invoice) || !is_array($invoice) || ($invoice['payment_status'] ?? '') !== 'completed') {
+    http_response_code(404);
+    return;
+}
 $subtotal = (float) $invoice['amount'] + (float) ($invoice['discount_amount'] ?? 0);
 $isTool = ($invoice['product_type'] ?? 'course') === 'tool';
 $paidAt = !empty($invoice['paid_at']) ? date('d M Y, h:i A', strtotime($invoice['paid_at'])) : '—';
@@ -111,10 +115,14 @@ $paidAt = !empty($invoice['paid_at']) ? date('d M Y, h:i A', strtotime($invoice[
                 <span class="label">Payment Method</span>
                 <span class="value">KHQR (Bakong)</span>
             </div>
-            <?php if (!empty($invoice['license_key']) && ($invoice['license_delivery_status'] ?? 'pending') === 'delivered'): ?>
+            <?php if (!empty($invoice['license_key'])): ?>
             <div class="receipt-row">
                 <span class="label">License Key</span>
                 <span class="value" style="font-family:monospace;"><?= e($invoice['license_key']) ?></span>
+            </div>
+            <div class="receipt-row">
+                <span class="label">License Registration</span>
+                <span class="value"><?= ($invoice['license_delivery_status'] ?? 'pending') === 'delivered' ? 'Confirmed' : 'Pending' ?></span>
             </div>
             <?php endif; ?>
 

@@ -21,7 +21,8 @@ If the migration is missing, license delivery stays pending and logs a retry err
 - License plans are the existing product IDs 1, 2 and 3 (30, 90 and 365 days). All checkout paths generate plan-bound keys. Other software products retain their download links and do not automatically receive a license key.
 - Retrying a registration with the same key and original purchase note succeeds without recreating or extending the license. A different purchase reference, plan or device is rejected. The expiry remains anchored to the original payment date.
 - Existing license registrations can be reconciled on retry when their original payment note matches. Edited or legacy notes may require support review. The migration does not assume older completed payments were delivered successfully.
-- Payment details, receipts and account purchase history are sent with private/no-store headers. Pending license keys are not included in the success-page HTML or JavaScript.
+- Payment details, receipts and account purchase history are sent with private/no-store headers. An authorized buyer can view and download their existing key as soon as payment is completed, even while server registration is pending. Receipts and key downloads identify registration separately from payment; visible keys are not a guarantee that activation has succeeded. Unpaid or unauthorized requests remain blocked.
+- Failed registration requests log only HTTP status and cURL error number, not API credentials, license keys or response bodies. These distinguish transport failures from API rejections; the hosting error log is needed to diagnose persistent pending registrations.
 
 ## Checks
 
@@ -34,6 +35,7 @@ php tests/license_delivery.php
 php tests/license_registration.php
 php tests/controller_security.php
 php tests/receipt_delivery.php
+php tests/success_license_access.php
 ```
 
 These checks use synthetic data without production configuration or bank requests. Registration tests use in-memory SQLite, translating MySQL lock syntax. They do not prove MySQL concurrency, real OAuth, bank settlement or hosting configuration.

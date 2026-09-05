@@ -64,9 +64,14 @@ class LicenseClient
         ]);
         $response = curl_exec($request);
         $status = curl_getinfo($request, CURLINFO_HTTP_CODE);
+        $transportError = curl_errno($request);
         curl_close($request);
         $body = is_string($response) ? json_decode($response, true) : null;
 
-        return $status >= 200 && $status < 300 && is_array($body) && ($body['success'] ?? false) === true;
+        $confirmed = $status >= 200 && $status < 300 && is_array($body) && ($body['success'] ?? false) === true;
+        if (!$confirmed) {
+            error_log('License registration not confirmed: http=' . $status . ' curl=' . $transportError);
+        }
+        return $confirmed;
     }
 }

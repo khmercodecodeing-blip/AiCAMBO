@@ -358,7 +358,7 @@ class PaymentController
         }
         $status = (new \App\Services\LicenseDeliveryService($this->invoiceModel))->deliver($invoice);
         flash($status === 'delivered' ? 'success' : 'info', $status === 'delivered'
-            ? 'Your license is ready.' : 'Payment received. License delivery is pending; retries are limited to once per minute.');
+            ? 'License registration confirmed.' : 'Payment received. Your key is available; license registration is pending. Please retry after one minute.');
         redirect('/payment/success/' . $invoiceNo);
     }
 
