@@ -30,6 +30,7 @@ return [
     'catalog.courses_empty' => 'មិនទាន់មានវគ្គសិក្សានៅឡើយទេ។',
     'catalog.tool' => 'កម្មវិធី',
     'catalog.course' => 'វគ្គសិក្សា',
+    'catalog.ai_badge' => 'AI Pro',
 
     'tools.title'      => 'ឧបករណ៍ទាំងអស់',
     'tools.subtitle'   => 'ឧបករណ៍ឌីជីថលទាំងអស់ដែលអាចទិញបានភ្លាមៗ ទូទាត់ប្រាក់ដោយស្វ័យប្រវត្តិតាមរយៈ KHQR',

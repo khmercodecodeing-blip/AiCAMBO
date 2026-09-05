@@ -2588,3 +2588,29 @@ select.form-control {
     color: var(--text-muted);
     cursor: pointer;
 }
+
+/* Catalog Product Type Badges */
+.catalog-type {
+    font-size: 0.65rem;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    display: inline-block;
+}
+.catalog-type-tool {
+    background: #dcfce7;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+.catalog-type-course {
+    background: #dbeafe;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+}
+.catalog-type-ai {
+    background: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fde68a;
+}

@@ -73,7 +73,8 @@ class CourseModel
              ) i ON c.id = i.course_id
              WHERE c.is_active = 1 AND c.id NOT IN (1, 2, 3)
                AND (
-                   (c.qv_product_key IS NOT NULL AND c.qv_product_key <> '')
+                   c.type = 'ai'
+                   OR (c.qv_product_key IS NOT NULL AND c.qv_product_key <> '')
                    OR LOWER(c.title) LIKE '%ai%'
                    OR LOWER(c.title) LIKE '%gemini%'
                    OR LOWER(c.title) LIKE '%chatgpt%'
@@ -145,7 +146,7 @@ class CourseModel
 
         $toolIds = [];
         foreach ($courses as $c) {
-            if (empty($c['qv_product_key']) && ($c['type'] ?? '') === 'tool') {
+            if (empty($c['qv_product_key']) && in_array($c['type'] ?? '', ['tool', 'ai'], true)) {
                 $toolIds[] = (int) ($c['id'] ?? 0);
             }
         }
@@ -204,7 +205,7 @@ class CourseModel
                     $course['in_stock'] = true;
                     $course['unlimited_stock'] = false;
                 }
-            } elseif (($course['type'] ?? '') === 'tool') {
+            } elseif (in_array($course['type'] ?? '', ['tool', 'ai'], true)) {
                 $course['is_qv'] = false;
                 $cid = (int) ($course['id'] ?? 0);
                 if (isset($localStocks[$cid])) {

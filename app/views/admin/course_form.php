@@ -40,6 +40,7 @@ $isQuantumVault = (int) ($course['id'] ?? 0) > 3 && !empty($course['qv_product_k
             <select id="type" name="type" class="form-control">
                 <option value="course" <?= ($course['type'] ?? 'course') === 'course' ? 'selected' : '' ?>>Course (Telegram Access)</option>
                 <option value="tool" <?= ($course['type'] ?? '') === 'tool' ? 'selected' : '' ?>>Tool (Download Link)</option>
+                <option value="ai" <?= ($course['type'] ?? '') === 'ai' ? 'selected' : '' ?>>Account AI Pro (Instant Delivery / API)</option>
             </select>
         </div>
 
@@ -151,6 +152,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (titleLabel) titleLabel.textContent = 'Tool Title *';
             if (titleInput) titleInput.placeholder = 'e.g., MT4 Auto Trader Bot';
             if (submitBtnText) submitBtnText.textContent = '<?= $course ? "Update Tool" : "Create Tool" ?>';
+        } else if (type === 'ai') {
+            tgGroup.style.display = 'none';
+            dlGroup.style.display = 'block';
+            document.getElementById('download_link').removeAttribute('required');
+            document.getElementById('telegram_group_id').removeAttribute('required');
+            if (titleLabel) titleLabel.textContent = 'Account AI Title *';
+            if (titleInput) titleInput.placeholder = 'e.g., Gemini 18 month link / ChatGPT Plus';
+            if (submitBtnText) submitBtnText.textContent = '<?= $course ? "Update Product" : "Create Product" ?>';
         } else {
             tgGroup.style.display = 'block';
             dlGroup.style.display = 'none';

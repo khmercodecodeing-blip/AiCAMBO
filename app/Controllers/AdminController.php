@@ -130,7 +130,7 @@ class AdminController
         $validationFailed = empty($data['title']) || $data['price'] <= 0 ||
             ($data['type'] === 'course' && empty($data['telegram_group_id'])) ||
             ($data['type'] === 'tool' && empty($data['download_link']) && !$isQuantumVault) ||
-            ($isQuantumVault && ($data['type'] !== 'tool' || $data['currency'] !== 'USD' ||
+            ($isQuantumVault && (!in_array($data['type'], ['tool', 'ai'], true) || $data['currency'] !== 'USD' ||
                 !is_finite($data['price']) || $data['price'] < (float) ($existingCourse['qv_max_cost'] ?? 0)));
 
         if ($validationFailed) {

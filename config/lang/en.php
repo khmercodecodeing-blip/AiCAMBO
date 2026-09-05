@@ -30,6 +30,7 @@ return [
     'catalog.courses_empty' => 'No courses available yet.',
     'catalog.tool' => 'Tool',
     'catalog.course' => 'Course',
+    'catalog.ai_badge' => 'AI Pro',
 
     'tools.title'      => 'All Tools',
     'tools.subtitle'   => 'All digital tools you can buy instantly. Auto payment via KHQR.',

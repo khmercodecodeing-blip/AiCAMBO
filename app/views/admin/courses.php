@@ -44,6 +44,8 @@
                             <td>
                                 <?php if (($c['type'] ?? 'course') === 'tool'): ?>
                                     <span class="badge" style="background:rgba(16,185,129,0.1);color:var(--green-400);border:1px solid rgba(16,185,129,0.2);font-size:0.75rem;padding:3px 8px;">Tool</span>
+                                <?php elseif (($c['type'] ?? '') === 'ai'): ?>
+                                    <span class="badge" style="background:rgba(245,158,11,0.12);color:#d97706;border:1px solid rgba(245,158,11,0.25);font-size:0.75rem;padding:3px 8px;">AI Pro</span>
                                 <?php else: ?>
                                     <span class="badge" style="background:rgba(59,130,246,0.1);color:var(--blue-400);border:1px solid rgba(59,130,246,0.2);font-size:0.75rem;padding:3px 8px;">Course</span>
                                 <?php endif; ?>

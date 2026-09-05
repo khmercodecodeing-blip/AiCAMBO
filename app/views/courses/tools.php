@@ -37,7 +37,13 @@ require APP_ROOT . '/app/views/layouts/header.php';
                     <div class="glass-card course-card">
                         <div class="card-image">
                             <div style="position:absolute;top:12px;left:12px;z-index:2;display:flex;gap:6px;">
-                                <span class="catalog-type <?= ($course['type'] ?? 'course') === 'tool' ? 'catalog-type-tool' : 'catalog-type-course' ?>"><?= e(t(($course['type'] ?? 'course') === 'tool' ? 'catalog.tool' : 'catalog.course')) ?></span>
+                                <?php
+                                $cType = $course['type'] ?? 'course';
+                                $isAi = ($cType === 'ai' || !empty($course['is_qv']));
+                                $typeLabel = $isAi ? 'catalog.ai_badge' : ($cType === 'tool' ? 'catalog.tool' : 'catalog.course');
+                                $typeClass = $isAi ? 'catalog-type-ai' : ($cType === 'tool' ? 'catalog-type-tool' : 'catalog-type-course');
+                                ?>
+                                <span class="catalog-type <?= $typeClass ?>"><?= e(t($typeLabel)) ?></span>
 
                                 <?php
                                 $discountPercent = 0;
