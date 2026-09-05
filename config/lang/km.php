@@ -33,6 +33,10 @@ return [
     'search.clear' => 'សម្អាតការស្វែងរក',
     'nav.menu' => 'ម៉ឺនុយ',
     'tools.empty'      => 'មិនទាន់មានឧបករណ៍ផ្សេងទៀតទេ។ សូមមកមើលម្តងទៀតពេលក្រោយ!',
+    'stock.available'  => 'ស្តុកនៅសល់',
+    'stock.in_stock'   => 'មានក្នុងស្តុក',
+    'stock.out_of_stock' => 'អស់ពីស្តុក',
+    'stock.unlimited'  => 'ស្តុកមិនកំណត់',
 
     'footer.powered' => 'ដំណើរការដោយ Bakong KHQR • Telegram',
     'footer.policy'  => 'គោលការណ៍ឯកជនភាព & មិនសងប្រាក់វិញ',

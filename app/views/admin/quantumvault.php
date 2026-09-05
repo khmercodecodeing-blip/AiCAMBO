@@ -55,15 +55,6 @@ $balanceLabel = $balanceLabel ?? 'Unavailable';
         <div class="alert alert-error" role="status"><?= e($notice) ?></div>
     <?php endforeach; ?>
 
-    <?php if ($configured && !$schemaReady): ?>
-        <div style="margin: 12px 0 24px 0;">
-            <form method="POST" action="<?= ADMIN_URL ?>/quantumvault/migrate">
-                <?= csrf_field() ?>
-                <button class="btn btn-primary btn-sm" type="submit">Run Database Migration Now</button>
-            </form>
-        </div>
-    <?php endif; ?>
-
     <?php if ($configured): ?>
         <section class="qv-band" aria-labelledby="qv-catalog-title">
             <h2 id="qv-catalog-title">Supplier catalog</h2>
@@ -100,53 +91,23 @@ $balanceLabel = $balanceLabel ?? 'Unavailable';
                         <select class="form-control" id="qv-mapping" name="mapping" required>
                             <option value="">Select product / variant</option>
                             <?php foreach ($catalog as $row): ?>
-                                <option value="<?= e(json_encode(['product' => $row['product'], 'variant' => $row['variant']], JSON_INVALID_UTF8_SUBSTITUTE)) ?>" data-price="<?= e($row['price']) ?>" <?= !$row['stock'] || $row['currency'] !== 'USD' ? 'disabled' : '' ?>><?= e($row['name'] . ' / ' . ($row['variant_name'] ?: 'Standard') . ' / ' . $row['price'] . ' ' . $row['currency']) ?></option>
+                                <option value="<?= e(json_encode(['product' => $row['product'], 'variant' => $row['variant']], JSON_INVALID_UTF8_SUBSTITUTE)) ?>" <?= !$row['stock'] || $row['currency'] !== 'USD' ? 'disabled' : '' ?>><?= e($row['name'] . ' / ' . ($row['variant_name'] ?: 'Standard') . ' / ' . $row['price'] . ' ' . $row['currency']) ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="qv-price">Selling price (USD)</label>
-                        <input class="form-control" id="qv-price" type="number" name="price" min="0.01" max="99999999.99" step="0.01" placeholder="e.g. 5.00" required>
-                        <small style="color: var(--text-muted); display: block; margin-top: 4px;" id="qv-price-hint">Customer price (must be &ge; supplier cost)</small>
+                        <input class="form-control" id="qv-price" type="number" name="price" min="0.01" max="99999999.99" step="0.01" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="qv-cost">Maximum cost (USD)</label>
-                        <input class="form-control" id="qv-cost" type="number" name="max_cost" min="0.0001" max="99999999.9999" step="0.0001" placeholder="e.g. 1.5000" required>
-                        <small style="color: var(--text-muted); display: block; margin-top: 4px;" id="qv-cost-hint">Supplier base price limit</small>
+                        <input class="form-control" id="qv-cost" type="number" name="max_cost" min="0.0001" max="99999999.9999" step="0.0001" required>
                     </div>
                     <button class="btn btn-primary qv-submit" type="submit">Import inactive tool</button>
                 </form>
             </section>
         <?php endif; ?>
     <?php endif; ?>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const mappingSelect = document.getElementById('qv-mapping');
-        const priceInput = document.getElementById('qv-price');
-        const costInput = document.getElementById('qv-cost');
-        const costHint = document.getElementById('qv-cost-hint');
-        const priceHint = document.getElementById('qv-price-hint');
-
-        if (mappingSelect && costInput) {
-            mappingSelect.addEventListener('change', function() {
-                const selected = this.options[this.selectedIndex];
-                const price = selected.getAttribute('data-price');
-                if (price && !isNaN(parseFloat(price))) {
-                    const numPrice = parseFloat(price);
-                    costInput.value = numPrice.toFixed(4);
-                    costInput.min = numPrice.toFixed(4);
-                    if (!priceInput.value || parseFloat(priceInput.value) < numPrice) {
-                        priceInput.value = (numPrice * 1.5).toFixed(2);
-                    }
-                    priceInput.min = numPrice.toFixed(2);
-                    if (costHint) costHint.textContent = 'Auto-filled with supplier price: $' + numPrice.toFixed(4);
-                    if (priceHint) priceHint.textContent = 'Selling price (suggested +50% markup, min $' + numPrice.toFixed(2) + ')';
-                }
-            });
-        }
-    });
-    </script>
 
     <section class="qv-band" aria-labelledby="qv-invoices-title">
         <h2 id="qv-invoices-title">Recent unresolved paid invoices</h2>

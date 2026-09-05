@@ -33,6 +33,55 @@ class QuantumVaultClient
         return (string) $enabled === '1';
     }
 
+    public static function getStockMap(): array
+    {
+        if (!self::enabled()) {
+            return [];
+        }
+        $cacheFile = (defined('APP_ROOT') ? APP_ROOT : dirname(__DIR__, 2)) . '/storage/qv_stock_cache.json';
+        if (file_exists($cacheFile) && (time() - filemtime($cacheFile) < 60)) {
+            $data = json_decode(@file_get_contents($cacheFile), true);
+            if (is_array($data)) {
+                return $data;
+            }
+        }
+        try {
+            $client = new self();
+            $products = $client->products();
+            $map = [];
+            foreach ($products as $p) {
+                $key = $p['productKey'] ?? null;
+                if (!$key) continue;
+                $variants = $p['variants'] ?? [];
+                if ($variants && is_array($variants)) {
+                    foreach ($variants as $v) {
+                        $vKey = $v['key'] ?? '';
+                        $map[$key . ':' . $vKey] = [
+                            'stock' => $v['stock'] ?? ($p['stock'] ?? null),
+                            'inStock' => ($p['inStock'] ?? false) && ($v['inStock'] ?? false),
+                            'unlimited' => !empty($p['unlimited']),
+                        ];
+                    }
+                }
+                $map[$key] = [
+                    'stock' => $p['stock'] ?? null,
+                    'inStock' => !empty($p['inStock']),
+                    'unlimited' => !empty($p['unlimited']),
+                ];
+            }
+            if ($map) {
+                @file_put_contents($cacheFile, json_encode($map));
+            }
+            return $map;
+        } catch (\Throwable $e) {
+            if (file_exists($cacheFile)) {
+                $data = json_decode(@file_get_contents($cacheFile), true);
+                if (is_array($data)) return $data;
+            }
+            return [];
+        }
+    }
+
     public function products(): array
     {
         return $this->request('GET', '/products')['products'] ?? [];

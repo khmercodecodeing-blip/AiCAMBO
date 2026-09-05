@@ -75,22 +75,54 @@ require APP_ROOT . '/app/views/layouts/header.php';
                             <h3 class="card-title"><?= e($course['title']) ?></h3>
                             <p class="card-desc"><?= e($course['description']) ?></p>
 
-                            <div style="font-size:0.85rem;color:var(--text-secondary);display:flex;align-items:center;gap:6px;margin-bottom:16px;">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--cyan-400);"><path d="M17 21v-2a4 4 0 0 0-3-3H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                                <span><strong><?= (int) ($course['student_count'] ?? 0) ?></strong> Enrolled</span>
+                            <div style="font-size:0.85rem;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+                                <?php if (!empty($course['is_qv']) || isset($course['stock_qty']) || !empty($course['unlimited_stock'])): ?>
+                                    <?php if (!empty($course['unlimited_stock'])): ?>
+                                        <span style="display:inline-flex;align-items:center;gap:5px;color:#10b981;font-weight:700;font-size:0.8rem;background:rgba(16,185,129,0.12);padding:2px 8px;border-radius:6px;border:1px solid rgba(16,185,129,0.25);">
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                                            <?= e(t('stock.unlimited')) ?>
+                                        </span>
+                                    <?php elseif (($course['stock_qty'] ?? null) !== null && (int) $course['stock_qty'] > 0): ?>
+                                        <span style="display:inline-flex;align-items:center;gap:5px;color:#10b981;font-weight:700;font-size:0.8rem;background:rgba(16,185,129,0.12);padding:2px 8px;border-radius:6px;border:1px solid rgba(16,185,129,0.25);">
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                                            <?= e(t('stock.available')) ?>: <strong><?= number_format((int) $course['stock_qty']) ?></strong>
+                                        </span>
+                                    <?php elseif (($course['stock_qty'] ?? null) === 0 || (isset($course['in_stock']) && !$course['in_stock'])): ?>
+                                        <span style="display:inline-flex;align-items:center;gap:5px;color:#ef4444;font-weight:700;font-size:0.8rem;background:rgba(239,68,68,0.12);padding:2px 8px;border-radius:6px;border:1px solid rgba(239,68,68,0.25);">
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                                            <?= e(t('stock.out_of_stock')) ?>
+                                        </span>
+                                    <?php else: ?>
+                                        <span style="display:inline-flex;align-items:center;gap:5px;color:#10b981;font-weight:700;font-size:0.8rem;background:rgba(16,185,129,0.12);padding:2px 8px;border-radius:6px;border:1px solid rgba(16,185,129,0.25);">
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                            <?= e(t('stock.in_stock')) ?>
+                                        </span>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+
+                                <span style="color:var(--text-secondary);display:inline-flex;align-items:center;gap:4px;font-size:0.8rem;">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--cyan-400);"><path d="M17 21v-2a4 4 0 0 0-3-3H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                    <strong><?= (int) ($course['student_count'] ?? 0) ?></strong> <?= ($course['type'] ?? '') === 'tool' ? 'Sold' : 'Enrolled' ?>
+                                </span>
                             </div>
 
                             <div class="card-footer">
                                 <a href="<?= APP_URL ?>/course/<?= $course['id'] ?>" class="btn btn-ghost btn-sm">
                                     <?= e(t('btn.learn_more')) ?>
                                 </a>
-                                <a href="<?= APP_URL ?>/checkout?course_id=<?= $course['id'] ?>"
-                                   class="btn btn-primary btn-sm"
-                                   data-buy-course="<?= $course['id'] ?>"
-                                   data-course-name="<?= e($course['title']) ?>"
-                                   data-course-price="<?= format_price($course['price'], $course['currency']) ?>">
-                                    <?= e(t('btn.buy_now')) ?>
-                                </a>
+                                <?php if (isset($course['in_stock']) && !$course['in_stock']): ?>
+                                    <button class="btn btn-sm" style="background:#475569;color:#94a3b8;cursor:not-allowed;" disabled>
+                                        <?= e(t('stock.out_of_stock')) ?>
+                                    </button>
+                                <?php else: ?>
+                                    <a href="<?= APP_URL ?>/checkout?course_id=<?= $course['id'] ?>"
+                                       class="btn btn-primary btn-sm"
+                                       data-buy-course="<?= $course['id'] ?>"
+                                       data-course-name="<?= e($course['title']) ?>"
+                                       data-course-price="<?= format_price($course['price'], $course['currency']) ?>">
+                                        <?= e(t('btn.buy_now')) ?>
+                                    </a>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>

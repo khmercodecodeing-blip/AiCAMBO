@@ -19,7 +19,7 @@ class CourseModel
      */
     public function getAll(): array
     {
-        return $this->db->fetchAll(
+        $courses = $this->db->fetchAll(
             "SELECT c.*, COALESCE(i.student_count, 0) as student_count
              FROM courses c
              LEFT JOIN (
@@ -31,6 +31,8 @@ class CourseModel
              WHERE c.is_active = 1 AND c.id NOT IN (1, 2, 3)
              ORDER BY c.created_at DESC"
         );
+        $this->populateStockInfo($courses);
+        return $courses;
     }
 
     /**
@@ -38,7 +40,7 @@ class CourseModel
      */
     public function getAllByType(string $type): array
     {
-        return $this->db->fetchAll(
+        $courses = $this->db->fetchAll(
             "SELECT c.*, COALESCE(i.student_count, 0) as student_count
              FROM courses c
              LEFT JOIN (
@@ -51,6 +53,8 @@ class CourseModel
              ORDER BY c.created_at DESC",
             [':type' => $type]
         );
+        $this->populateStockInfo($courses);
+        return $courses;
     }
 
     /**
@@ -58,7 +62,7 @@ class CourseModel
      */
     public function getAllAdmin(): array
     {
-        return $this->db->fetchAll(
+        $courses = $this->db->fetchAll(
             "SELECT c.*, COALESCE(i.student_count, 0) as student_count
              FROM courses c
              LEFT JOIN (
@@ -69,6 +73,8 @@ class CourseModel
              ) i ON c.id = i.course_id
              ORDER BY c.created_at DESC"
         );
+        $this->populateStockInfo($courses);
+        return $courses;
     }
 
     /**
@@ -76,7 +82,7 @@ class CourseModel
      */
     public function getById(int $id): ?array
     {
-        return $this->db->fetch(
+        $course = $this->db->fetch(
             "SELECT c.*, COALESCE(i.student_count, 0) as student_count
              FROM courses c
              LEFT JOIN (
@@ -88,6 +94,72 @@ class CourseModel
              WHERE c.id = :id",
             [':id' => $id]
         );
+        if ($course) {
+            $list = [&$course];
+            $this->populateStockInfo($list);
+        }
+        return $course;
+    }
+
+    /**
+     * Populate real-time stock information for QuantumVault and local tools
+     */
+    public function populateStockInfo(array &$courses): void
+    {
+        if (empty($courses)) {
+            return;
+        }
+        $qvStockMap = class_exists('\App\Services\QuantumVaultClient')
+            ? \App\Services\QuantumVaultClient::getStockMap()
+            : [];
+
+        $toolIds = [];
+        foreach ($courses as $c) {
+            if (empty($c['qv_product_key']) && ($c['type'] ?? '') === 'tool') {
+                $toolIds[] = (int) ($c['id'] ?? 0);
+            }
+        }
+        $localStocks = [];
+        if (!empty($toolIds)) {
+            try {
+                $inQuery = implode(',', array_filter($toolIds));
+                if ($inQuery !== '') {
+                    $rows = $this->db->fetchAll("SELECT course_id, COUNT(*) as cnt FROM product_stocks WHERE course_id IN ($inQuery) AND is_sold = 0 GROUP BY course_id");
+                    foreach ($rows as $r) {
+                        $localStocks[(int) $r['course_id']] = (int) $r['cnt'];
+                    }
+                }
+            } catch (\Throwable $e) {
+            }
+        }
+
+        foreach ($courses as &$course) {
+            if (!empty($course['qv_product_key'])) {
+                $pKey = (string) $course['qv_product_key'];
+                $vKey = (string) ($course['qv_variant_key'] ?? '');
+                $lookup = ($vKey !== '') ? ($pKey . ':' . $vKey) : $pKey;
+                $info = $qvStockMap[$lookup] ?? ($qvStockMap[$pKey] ?? null);
+                $course['is_qv'] = true;
+                if ($info) {
+                    $course['stock_qty'] = $info['stock'];
+                    $course['in_stock'] = !empty($info['inStock']);
+                    $course['unlimited_stock'] = !empty($info['unlimited']);
+                } else {
+                    $course['stock_qty'] = null;
+                    $course['in_stock'] = true;
+                    $course['unlimited_stock'] = false;
+                }
+            } elseif (($course['type'] ?? '') === 'tool') {
+                $course['is_qv'] = false;
+                $cid = (int) ($course['id'] ?? 0);
+                if (isset($localStocks[$cid])) {
+                    $course['stock_qty'] = $localStocks[$cid];
+                    $course['in_stock'] = $localStocks[$cid] > 0;
+                    $course['unlimited_stock'] = false;
+                }
+            }
+        }
+        unset($course);
     }
 
     /**

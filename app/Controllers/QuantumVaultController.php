@@ -138,23 +138,7 @@ class QuantumVaultController
             if ($connection !== null && $connection->inTransaction()) {
                 $connection->rollBack();
             }
-            error_log('QuantumVault import error: ' . $error->getMessage());
-            $raw = $error->getMessage();
-            $cleanMsg = trim(str_ireplace(['SECRET', 'simulated mapping error'], '', $raw));
-            if (str_contains($raw, 'above the approved cost') || str_contains($raw, 'unavailable')) {
-                $msg = 'Import failed: Supplier product is out of stock or price is higher than your Maximum cost ceiling.';
-            } elseif (str_contains($raw, 'Invalid cost limit')) {
-                $msg = 'Import failed: Selling price cannot be less than Maximum supplier cost.';
-            } elseif (str_contains($raw, 'Mapping already exists')) {
-                $msg = 'Import failed: This product / variant has already been imported.';
-            } elseif (str_contains($raw, 'Invalid price')) {
-                $msg = 'Import failed: Please enter a valid price.';
-            } elseif (str_contains($raw, 'Invalid mapping')) {
-                $msg = 'Import failed: Please select a valid product / variant.';
-            } else {
-                $msg = 'Import failed' . ($cleanMsg !== '' ? ': ' . htmlspecialchars($cleanMsg, ENT_QUOTES, 'UTF-8') : '. Check supplier stock and database setup.');
-            }
-            flash('error', $msg);
+            flash('error', 'Import failed. Check the selected product, stock, USD prices, existing mappings and database setup.');
         }
         $this->back();
     }
@@ -198,52 +182,6 @@ class QuantumVaultController
                 ? 'Delivery completed.' : 'Delivery is not complete. Check the invoice status before taking further action.');
         } catch (\Throwable $error) {
             flash('error', 'Retry could not be completed. Only paid, pending supplier invoices without an order reference can be retried.');
-        }
-        $this->back();
-    }
-
-    public function migrate(): void
-    {
-        if (!$this->protect(true)) {
-            return;
-        }
-        try {
-            $this->requireConfigured();
-            $database = Database::getInstance();
-            $columns = [
-                'courses' => [
-                    'qv_product_key' => 'VARCHAR(191) DEFAULT NULL',
-                    'qv_variant_key' => 'VARCHAR(191) DEFAULT NULL',
-                    'qv_max_cost' => 'DECIMAL(12,4) DEFAULT NULL',
-                ],
-                'invoices' => [
-                    'qv_product_key' => 'VARCHAR(191) DEFAULT NULL',
-                    'qv_variant_key' => 'VARCHAR(191) DEFAULT NULL',
-                    'qv_max_cost' => 'DECIMAL(12,4) DEFAULT NULL',
-                    'qv_status' => 'VARCHAR(20) DEFAULT NULL',
-                    'qv_order_id' => 'VARCHAR(191) DEFAULT NULL',
-                    'qv_response' => 'MEDIUMTEXT DEFAULT NULL',
-                    'qv_attempted_at' => 'DATETIME DEFAULT NULL',
-                    'delivered_stock' => 'MEDIUMTEXT DEFAULT NULL',
-                ],
-            ];
-            foreach ($columns as $table => $definitions) {
-                $existing = array_column($database->fetchAll("SHOW COLUMNS FROM `$table`"), 'Field');
-                foreach ($definitions as $column => $definition) {
-                    if (!in_array($column, $existing, true)) {
-                        $database->query("ALTER TABLE `$table` ADD COLUMN `$column` $definition");
-                    }
-                }
-            }
-            $database->query('ALTER TABLE invoices MODIFY COLUMN delivered_stock MEDIUMTEXT DEFAULT NULL');
-            $indexes = array_column($database->fetchAll('SHOW INDEX FROM invoices'), 'Key_name');
-            if (!in_array('uq_invoices_qv_order', $indexes, true)) {
-                $database->query('CREATE UNIQUE INDEX uq_invoices_qv_order ON invoices (qv_order_id)');
-            }
-            \App\Models\QuantumVaultOrderModel::assertUniqueOrderIndex($database->getConnection());
-            flash('success', 'QuantumVault database schema migrated successfully.');
-        } catch (\Throwable $error) {
-            flash('error', 'Migration failed: ' . $error->getMessage());
         }
         $this->back();
     }

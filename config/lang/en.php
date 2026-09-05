@@ -33,6 +33,10 @@ return [
     'search.clear' => 'Clear search',
     'nav.menu' => 'Menu',
     'tools.empty'      => 'No other tools available yet. Check back soon!',
+    'stock.available'  => 'Available Stock',
+    'stock.in_stock'   => 'In Stock',
+    'stock.out_of_stock' => 'Out of Stock',
+    'stock.unlimited'  => 'Unlimited Stock',
 
     'footer.powered' => 'Powered by Bakong KHQR • Telegram',
     'footer.policy'  => 'Privacy & Refund Policy',

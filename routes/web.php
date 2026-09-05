@@ -223,10 +223,6 @@ $router->post($adminPrefix . '/quantumvault/retry', function () {
     (new QuantumVaultController())->retry();
 });
 
-$router->post($adminPrefix . '/quantumvault/migrate', function () {
-    (new QuantumVaultController())->migrate();
-});
-
 $router->get($adminPrefix . '/login', function () {
     (new AdminController())->loginForm();
 });

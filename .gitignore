@@ -1,6 +1,8 @@
 .env
 /storage/thumbnails/*
 !/storage/thumbnails/.gitkeep
+/storage/*.json
+/storage/*.log
 /vendor/
 /key/
 /keyffff/
