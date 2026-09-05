@@ -55,6 +55,15 @@ $balanceLabel = $balanceLabel ?? 'Unavailable';
         <div class="alert alert-error" role="status"><?= e($notice) ?></div>
     <?php endforeach; ?>
 
+    <?php if ($configured && !$schemaReady): ?>
+        <div style="margin: 12px 0 24px 0;">
+            <form method="POST" action="<?= ADMIN_URL ?>/quantumvault/migrate">
+                <?= csrf_field() ?>
+                <button class="btn btn-primary btn-sm" type="submit">Run Database Migration Now</button>
+            </form>
+        </div>
+    <?php endif; ?>
+
     <?php if ($configured): ?>
         <section class="qv-band" aria-labelledby="qv-catalog-title">
             <h2 id="qv-catalog-title">Supplier catalog</h2>
