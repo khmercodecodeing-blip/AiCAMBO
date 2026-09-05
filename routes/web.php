@@ -96,6 +96,10 @@ $router->get('/tools', function () {
     (new CourseController())->toolsPage();
 });
 
+$router->get('/courses', function () {
+    (new CourseController())->coursesPage();
+});
+
 // Privacy & Refund Policy Page
 $router->get('/policy', function () {
     (new PageController())->policy();

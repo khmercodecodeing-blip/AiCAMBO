@@ -7,9 +7,9 @@ if (PHP_SAPI !== 'cli-server' || !in_array($_SERVER['REMOTE_ADDR'] ?? '', ['127.
 
 $root = dirname(__DIR__, 2);
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-if (str_starts_with($path, '/public/assets/')) {
+if (str_starts_with($path, '/public/assets/') || str_starts_with($path, '/storage/thumbnails/') || $path === '/PhotoTool/Aderr.PNG') {
     $asset = realpath($root . $path);
-    $assetRoot = realpath($root . '/public/assets') . DIRECTORY_SEPARATOR;
+    $assetRoot = realpath($root . (str_starts_with($path, '/storage/') ? '/storage/thumbnails' : ($path === '/PhotoTool/Aderr.PNG' ? '/PhotoTool' : '/public/assets'))) . DIRECTORY_SEPARATOR;
     if ($asset && str_starts_with($asset, $assetRoot) && is_file($asset)) {
         return false;
     }
@@ -20,7 +20,7 @@ if (in_array($path, ['/lang/km', '/lang/en'], true)) {
     header('Location: /?navigation=1&language=' . basename($path));
     exit;
 }
-if ($path !== '/') {
+if (!in_array($path, ['/', '/tools', '/courses', '/telegram-adder-pro'], true)) {
     http_response_code(404);
     exit;
 }
@@ -33,12 +33,28 @@ function e($value): string { return htmlspecialchars((string) $value, ENT_QUOTES
 function asset(string $path): string { return APP_URL . '/public/assets/' . $path; }
 function current_lang(): string { return ($_GET['language'] ?? '') === 'en' ? 'en' : 'km'; }
 function t(string $key): string {
-    $labels = ['nav.courses' => 'Courses', 'nav.tools' => 'Tools', 'nav.tool_telegram' => 'Telegram', 'nav.login' => 'Sign in', 'nav.home' => 'Home', 'nav.support' => 'Support'];
+    $labels = require dirname(__DIR__, 2) . '/config/lang/' . current_lang() . '.php';
     return $labels[$key] ?? $key;
 }
 function get_flash(string $type): ?string { return null; }
 function format_price($amount, $currency): string { return '$' . number_format((float) $amount, 2); }
 function csrf_field(): string { return '<input type="hidden" name="csrf_token" value="preview-only">'; }
+
+if ($path !== '/' || !isset($_GET['state'])) {
+    $_GET['navigation'] = '1';
+    $catalogType = ['/' => 'all', '/tools' => 'tool', '/courses' => 'course'][$path] ?? 'tool';
+    $courses = [
+        ['id' => 10, 'type' => 'tool', 'title' => 'Demo Telegram Tool', 'description' => 'កម្មវិធីសាកល្បងសម្រាប់ Windows', 'price' => 10, 'currency' => 'USD', 'thumbnail' => 'course_1779896317_dc386705.png', 'student_count' => 7],
+        ['id' => 11, 'type' => 'tool', 'title' => 'Demo AI Tool', 'description' => 'ឧបករណ៍ AI សាកល្បង', 'price' => 1, 'original_price' => 3, 'currency' => 'USD', 'thumbnail' => 'course_1779900243_a059bb2d.png', 'student_count' => 8],
+        ['id' => 12, 'type' => 'course', 'title' => 'Demo AI Course', 'description' => 'វគ្គសិក្សា AI សាកល្បង', 'price' => 15, 'currency' => 'USD', 'thumbnail' => 'course_1779900243_a059bb2d.png', 'student_count' => 4],
+    ];
+    if ($catalogType !== 'all') {
+        $courses = array_values(array_filter($courses, fn(array $product): bool => $product['type'] === $catalogType));
+    }
+    if (isset($_GET['empty'])) $courses = [];
+    require $root . '/app/views/courses/' . ($path === '/telegram-adder-pro' ? 'telegram_adder.php' : 'tools.php');
+    return;
+}
 
 $licenseDeliveryStatus = ($_GET['state'] ?? '') === 'delivered' ? 'delivered' : 'pending';
 $invoice = [

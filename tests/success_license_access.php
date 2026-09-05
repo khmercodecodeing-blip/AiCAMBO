@@ -34,6 +34,12 @@ foreach (['completed', 'pending', 'expired'] as $paymentStatus) {
         if (str_contains($html, 'Retry Registration') !== ($registrationStatus !== 'delivered')) {
             throw new RuntimeException('Registration status must remain honest and retryable.');
         }
+        if (str_contains($html, 'autoDownloadReceiptPdf') || str_contains($html, "createElement('iframe')")
+            || str_contains($html, 'html2canvas') || str_contains($html, 'jspdf')
+            || str_contains($html, 'pdf.save(')
+            || !str_contains($html, '/payment/receipt/INV-TEST')) {
+            throw new RuntimeException('Receipts must remain available manually without automatic downloads.');
+        }
     }
 }
 restore_error_handler();

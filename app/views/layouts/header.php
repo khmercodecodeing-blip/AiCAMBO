@@ -19,7 +19,7 @@ if ($currentUri !== '/' && str_ends_with($currentUri, '/')) {
 <html lang="<?= e(current_lang()) ?>">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="description" content="<?= e($pageTitle ?? 'Premium online courses with instant Telegram group access') ?>">
     <title><?= e($pageTitle ?? APP_NAME) ?></title>
 
@@ -36,7 +36,7 @@ if ($currentUri !== '/' && str_ends_with($currentUri, '/')) {
     <link rel="apple-touch-icon" href="<?= asset('images/icons/apple-touch-icon.png') ?>">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="<?= asset('css/style.css') ?>?v=2.0.1">
+    <link rel="stylesheet" href="<?= asset('css/style.css') ?>?v=2.0.3">
 
     <!-- SweetAlert2 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
@@ -58,24 +58,24 @@ if ($currentUri !== '/' && str_ends_with($currentUri, '/')) {
         </a>
 
         <!-- Navbar Search -->
-        <?php if (in_array($currentUri, ['/', '/tools'], true)): ?>
+        <?php if (in_array($currentUri, ['/', '/tools', '/courses'], true)): ?>
         <div class="navbar-search">
             <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); display: flex; align-items: center; pointer-events: none;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             </span>
-            <input type="text" id="course-search-input" placeholder="<?= e(t('search.placeholder')) ?>" />
-            <span id="search-clear-btn" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); cursor: pointer; display: none; align-items: center; font-size: 1.1rem; user-select: none;">&times;</span>
+            <input type="text" id="course-search-input" aria-label="<?= e(t('search.placeholder')) ?>" placeholder="<?= e(t('search.placeholder')) ?>" />
+            <button type="button" id="search-clear-btn" aria-label="<?= e(t('search.clear')) ?>" title="<?= e(t('search.clear')) ?>" style="display:none;">&times;</button>
         </div>
         <?php endif; ?>
 
-        <button class="menu-toggle" aria-label="Toggle menu">
+        <button type="button" class="menu-toggle" aria-label="<?= e(t('nav.menu')) ?>" aria-expanded="false" aria-controls="primary-navigation">
             <span></span><span></span><span></span>
         </button>
 
-        <div class="navbar-links">
-            <a href="<?= APP_URL ?>" class="<?= $currentUri === '/' ? 'active' : '' ?>"><?= e(t('nav.courses')) ?></a>
-            <a href="<?= APP_URL ?>/tools" class="<?= $currentUri === '/tools' ? 'active' : '' ?>"><?= e(t('nav.tools')) ?></a>
-            <a href="<?= APP_URL ?>/telegram-adder-pro" class="<?= $currentUri === '/telegram-adder-pro' ? 'active' : '' ?>"><?= e(t('nav.tool_telegram')) ?></a>
+        <div class="navbar-links" id="primary-navigation">
+            <a href="<?= APP_URL ?>" aria-current="<?= $currentUri === '/' ? 'page' : 'false' ?>" class="<?= $currentUri === '/' ? 'active' : '' ?>"><?= e(t('nav.home')) ?></a>
+            <a href="<?= APP_URL ?>/tools" aria-current="<?= $currentUri === '/tools' ? 'page' : 'false' ?>" class="<?= $currentUri === '/tools' ? 'active' : '' ?>"><?= e(t('nav.tools')) ?></a>
+            <a href="<?= APP_URL ?>/courses" aria-current="<?= $currentUri === '/courses' ? 'page' : 'false' ?>" class="<?= $currentUri === '/courses' ? 'active' : '' ?>"><?= e(t('nav.courses')) ?></a>
             <?php if (isset($_SESSION['user_email'])): ?>
                 <a href="<?= APP_URL ?>/my-downloads" class="<?= $currentUri === '/my-downloads' ? 'active' : '' ?>" style="display:inline-flex; align-items:center; gap:8px;">
                     <?php if (!empty($_SESSION['user_picture'])): ?>
@@ -104,13 +104,17 @@ if ($currentUri !== '/' && str_ends_with($currentUri, '/')) {
 
 <!-- Mobile App-style Bottom Tab Bar (hidden on desktop) -->
 <nav class="bottom-nav">
-    <a href="<?= APP_URL ?>" class="bottom-nav-item <?= $currentUri === '/' ? 'active' : '' ?>">
+    <a href="<?= APP_URL ?>" aria-current="<?= $currentUri === '/' ? 'page' : 'false' ?>" class="bottom-nav-item <?= $currentUri === '/' ? 'active' : '' ?>">
         <span class="bottom-nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
         <span><?= e(t('nav.home')) ?></span>
     </a>
-    <a href="<?= APP_URL ?>/tools" class="bottom-nav-item <?= $currentUri === '/tools' ? 'active' : '' ?>">
+    <a href="<?= APP_URL ?>/tools" aria-current="<?= $currentUri === '/tools' ? 'page' : 'false' ?>" class="bottom-nav-item <?= $currentUri === '/tools' ? 'active' : '' ?>">
         <span class="bottom-nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
         <span><?= e(t('nav.tools')) ?></span>
+    </a>
+    <a href="<?= APP_URL ?>/courses" aria-current="<?= $currentUri === '/courses' ? 'page' : 'false' ?>" class="bottom-nav-item <?= $currentUri === '/courses' ? 'active' : '' ?>">
+        <span class="bottom-nav-icon"><svg class="ui-icon" width="20" height="20" aria-hidden="true" focusable="false"><use href="<?= asset('images/icons/ui.svg') ?>?v=2#book-open-text"></use></svg></span>
+        <span><?= e(t('nav.courses')) ?></span>
     </a>
     <?php if (isset($_SESSION['user_email'])): ?>
         <a href="<?= APP_URL ?>/my-downloads" class="bottom-nav-item <?= $currentUri === '/my-downloads' ? 'active' : '' ?>">
@@ -127,10 +131,6 @@ if ($currentUri !== '/' && str_ends_with($currentUri, '/')) {
         <span class="bottom-nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></span>
         <span><?= e(t('nav.support')) ?></span>
     </button>
-    <a href="<?= APP_URL ?>/lang/<?= current_lang() === 'km' ? 'en' : 'km' ?>" class="bottom-nav-item" aria-label="<?= current_lang() === 'km' ? 'ប្ដូរទៅភាសាអង់គ្លេស' : 'Switch to Khmer' ?>" title="<?= current_lang() === 'km' ? 'ប្ដូរទៅភាសាអង់គ្លេស' : 'Switch to Khmer' ?>">
-        <span class="bottom-nav-icon"><svg class="ui-icon" width="20" height="20" aria-hidden="true" focusable="false"><use href="<?= asset('images/icons/ui.svg') ?>#languages"></use></svg></span>
-        <span><?= current_lang() === 'km' ? 'ខ្មែរ' : 'EN' ?></span>
-    </a>
 </nav>
 
 <!-- Flash Messages -->

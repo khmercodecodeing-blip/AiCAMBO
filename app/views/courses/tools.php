@@ -1,36 +1,41 @@
-<?php require APP_ROOT . '/app/views/layouts/header.php'; ?>
+<?php
+$catalogType = $catalogType ?? 'tool';
+$catalogTitle = ['all' => 'catalog.all_title', 'tool' => 'tools.title', 'course' => 'catalog.courses_title'][$catalogType];
+$catalogSubtitle = ['all' => 'catalog.all_subtitle', 'tool' => 'tools.subtitle', 'course' => 'catalog.courses_subtitle'][$catalogType];
+require APP_ROOT . '/app/views/layouts/header.php';
+?>
 
-<section class="courses-section">
+<section class="courses-section tools-catalog">
     <div class="container">
         <div class="section-header">
-            <h2><?= e(t('tools.title')) ?></h2>
-            <p><?= e(t('tools.subtitle')) ?></p>
+            <h2><?= e(t($catalogTitle)) ?></h2>
+            <p><?= e(t($catalogSubtitle)) ?></p>
         </div>
 
-        <!-- Featured: Telegram Adder Pro (Tool Add Telegram) -->
-        <a href="<?= APP_URL ?>/telegram-adder-pro" class="glass-card fade-in" style="display:flex;align-items:center;gap:16px;padding:20px 24px;margin-bottom:32px;border:1px solid var(--border-accent);text-decoration:none;">
-            <img src="<?= APP_URL ?>/PhotoTool/Aderr.PNG" alt="Telegram Adder Pro" style="width:72px;height:72px;border-radius:12px;object-fit:cover;flex-shrink:0;border:1px solid var(--border-color);">
-            <div style="flex:1;">
-                <div style="font-weight:700;color:var(--text-primary);font-size:1rem;"><?= e(t('tools.featured')) ?></div>
-                <div style="font-size:0.85rem;color:var(--text-secondary);"><?= e(t('tools.featured_desc')) ?></div>
-            </div>
-            <span class="btn btn-ghost btn-sm" style="flex-shrink:0;"><?= e(t('tools.view_plans')) ?></span>
-        </a>
-
-        <?php if (empty($courses)): ?>
-            <div class="text-center" style="padding:60px 0;">
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1" style="margin:0 auto 16px;">
-                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-                </svg>
-                <p class="text-muted"><?= e(t('tools.empty')) ?></p>
-            </div>
-        <?php else: ?>
             <div class="course-grid">
-                <?php foreach ($courses as $course): ?>
+                <?php if ($catalogType !== 'course'): ?>
+                <article class="glass-card course-card telegram-product-card">
+                    <a class="card-image" href="<?= APP_URL ?>/telegram-adder-pro" aria-label="Telegram Adder Pro">
+                        <img src="<?= APP_URL ?>/PhotoTool/Aderr.PNG" alt="Telegram Adder Pro" width="1631" height="875" fetchpriority="high">
+                    </a>
+                    <div class="card-body">
+                        <h3 class="card-title"><a href="<?= APP_URL ?>/telegram-adder-pro">Telegram Adder Pro</a></h3>
+                        <p class="card-desc"><?= e(t('tools.featured_desc')) ?></p>
+                        <div class="card-footer">
+                            <a href="<?= APP_URL ?>/telegram-adder-pro" class="btn btn-ghost btn-sm"><?= e(t('btn.learn_more')) ?></a>
+                            <a href="<?= APP_URL ?>/telegram-adder-pro#pricing" class="btn btn-primary btn-sm"><?= e(t('tools.view_plans')) ?></a>
+                        </div>
+                    </div>
+                </article>
+                <?php endif; ?>
+                <?php if ($catalogType === 'course' && empty($courses)): ?>
+                    <p class="text-muted catalog-empty"><?= e(t('catalog.courses_empty')) ?></p>
+                <?php endif; ?>
+                <?php foreach ($courses ?? [] as $course): ?>
                     <div class="glass-card course-card">
                         <div class="card-image">
                             <div style="position:absolute;top:12px;left:12px;z-index:2;display:flex;gap:6px;">
-                                <span style="background:#dcfce7;color:#15803d;border:1px solid #bbf7d0;font-size:0.65rem;padding:3px 8px;border-radius:20px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;">Tool</span>
+                                <span class="catalog-type <?= ($course['type'] ?? 'course') === 'tool' ? 'catalog-type-tool' : 'catalog-type-course' ?>"><?= e(t(($course['type'] ?? 'course') === 'tool' ? 'catalog.tool' : 'catalog.course')) ?></span>
 
                                 <?php
                                 $discountPercent = 0;
@@ -77,21 +82,20 @@
 
                             <div class="card-footer">
                                 <a href="<?= APP_URL ?>/course/<?= $course['id'] ?>" class="btn btn-ghost btn-sm">
-                                    Learn More
+                                    <?= e(t('btn.learn_more')) ?>
                                 </a>
                                 <a href="<?= APP_URL ?>/checkout?course_id=<?= $course['id'] ?>"
                                    class="btn btn-primary btn-sm"
                                    data-buy-course="<?= $course['id'] ?>"
                                    data-course-name="<?= e($course['title']) ?>"
                                    data-course-price="<?= format_price($course['price'], $course['currency']) ?>">
-                                    Buy Now
+                                    <?= e(t('btn.buy_now')) ?>
                                 </a>
                             </div>
                         </div>
                     </div>
                 <?php endforeach; ?>
             </div>
-        <?php endif; ?>
     </div>
 </section>
 

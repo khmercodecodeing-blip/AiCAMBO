@@ -100,17 +100,30 @@ function initMobileMenu() {
     const nav = document.querySelector('.navbar-links');
 
     if (toggle && nav) {
+        function setMenuOpen(isOpen) {
+            nav.classList.toggle('open', isOpen);
+            toggle.classList.toggle('active', isOpen);
+            toggle.setAttribute('aria-expanded', String(isOpen));
+        }
+
         toggle.addEventListener('click', () => {
-            nav.classList.toggle('open');
-            toggle.classList.toggle('active');
+            setMenuOpen(!nav.classList.contains('open'));
         });
 
         // Close on outside click
         document.addEventListener('click', (e) => {
             if (!toggle.contains(e.target) && !nav.contains(e.target)) {
-                nav.classList.remove('open');
-                toggle.classList.remove('active');
+                setMenuOpen(false);
             }
+        });
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && nav.classList.contains('open')) {
+                setMenuOpen(false);
+                toggle.focus();
+            }
+        });
+        nav.addEventListener('click', (event) => {
+            if (event.target.closest('a')) setMenuOpen(false);
         });
     }
 }

@@ -17,6 +17,7 @@
     line-height: 1.2;
     background: linear-gradient(135deg, #1d4ed8, #2563eb, #0ea5e9);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 20px;
     font-family: 'Kantumruy Pro', 'Inter', sans-serif;
@@ -427,6 +428,73 @@
     justify-content: center;
     font-weight: 700;
 }
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 28px 0 32px;
+    }
+
+    .hero-title {
+        font-size: 1.8rem;
+        letter-spacing: 0;
+        overflow-wrap: anywhere;
+        margin-bottom: 12px;
+    }
+
+    .hero-subtitle {
+        font-size: 0.95rem;
+        margin-bottom: 20px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .btn-premium-download,
+    .btn-premium-buy {
+        min-height: 48px;
+        padding: 12px 16px;
+        justify-content: center;
+        border-radius: 8px;
+        font-size: 0.95rem;
+    }
+
+    .hero-mockup {
+        margin-top: 20px;
+        padding: 0;
+        border: 0;
+        box-shadow: none;
+        border-radius: 8px;
+    }
+
+    .features-grid,
+    .pricing-grid,
+    .support-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+    }
+
+    .feature-card,
+    .pricing-card,
+    .support-card {
+        min-width: 0;
+        padding: 24px 20px;
+        border-radius: 8px;
+        overflow-wrap: anywhere;
+    }
+
+    .section-header h2 {
+        font-size: 1.4rem;
+        letter-spacing: 0;
+        overflow-wrap: anywhere;
+    }
+
+    #pricing {
+        scroll-margin-top: 80px;
+    }
+}
 </style>
 
 <!-- Hero / Intro Section -->
@@ -454,7 +522,7 @@
         </div>
 
         <div class="hero-mockup">
-            <img src="https://aicambo.store/PhotoTool/Aderr.PNG" alt="Telegram Adder Pro App Interface" />
+            <img src="<?= APP_URL ?>/PhotoTool/Aderr.PNG" alt="Telegram Adder Pro App Interface" width="1631" height="875" />
         </div>
     </div>
 </section>

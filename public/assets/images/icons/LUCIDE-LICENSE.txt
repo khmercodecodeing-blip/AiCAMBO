@@ -1,4 +1,4 @@
-The receipt-text and languages symbols in ui.svg are from Lucide:
+The receipt-text, languages and book-open-text symbols in ui.svg are from Lucide:
 https://github.com/lucide-icons/lucide
 
 ISC License

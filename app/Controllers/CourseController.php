@@ -22,8 +22,9 @@ class CourseController
     public function index(): void
     {
         $courses = $this->courseModel->getAll();
-        $pageTitle = 'Explore Courses — ' . APP_NAME;
-        require APP_ROOT . '/app/views/courses/index.php';
+        $catalogType = 'all';
+        $pageTitle = t('nav.home') . ' — ' . APP_NAME;
+        require APP_ROOT . '/app/views/courses/tools.php';
     }
 
     /**
@@ -58,7 +59,16 @@ class CourseController
     public function toolsPage(): void
     {
         $courses = $this->courseModel->getAllByType('tool');
+        $catalogType = 'tool';
         $pageTitle = 'All Tools — ' . APP_NAME;
+        require APP_ROOT . '/app/views/courses/tools.php';
+    }
+
+    public function coursesPage(): void
+    {
+        $courses = $this->courseModel->getAllByType('course');
+        $catalogType = 'course';
+        $pageTitle = t('nav.courses') . ' — ' . APP_NAME;
         require APP_ROOT . '/app/views/courses/tools.php';
     }
 }

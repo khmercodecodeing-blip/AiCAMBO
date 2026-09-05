@@ -6,9 +6,6 @@ if (!isset($invoice) || !is_array($invoice) || ($invoice['payment_status'] ?? ''
 $licenseDeliveryStatus = $licenseDeliveryStatus ?? 'pending';
 require APP_ROOT . '/app/views/layouts/header.php';
 ?>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
 <style>
 .success-card { min-width: 0; overflow-wrap: anywhere; }
 .success-card h1 { font-size: 1.5rem; line-height: 1.35; }
@@ -183,38 +180,6 @@ Website: https://aicambo.store
     document.body.removeChild(link);
 }
 
-// Auto-download the receipt as a PDF as soon as the success page loads (no manual click needed)
-(function autoDownloadReceiptPdf() {
-    const invoiceNo = <?= json_encode($invoice['invoice_no'], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
-    const receiptUrl = <?= json_encode(APP_URL . '/payment/receipt/' . $invoice['invoice_no'], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
-
-    const iframe = document.createElement('iframe');
-    iframe.style.position = 'fixed';
-    iframe.style.left = '-9999px';
-    iframe.style.width = '480px';
-    iframe.style.height = '800px';
-    document.body.appendChild(iframe);
-
-    iframe.onload = function () {
-        // Give the iframe's own stylesheet a moment to apply before capturing
-        setTimeout(() => {
-            const doc = iframe.contentDocument;
-            const target = doc.querySelector('.receipt-card') || doc.body;
-            html2canvas(target, { scale: 2, useCORS: true, backgroundColor: '#ffffff' }).then(canvas => {
-                const imgData = canvas.toDataURL('image/png');
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF({ unit: 'px', format: [canvas.width, canvas.height] });
-                pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-                pdf.save(`Receipt_${invoiceNo}.pdf`);
-            }).catch(err => {
-                console.error('Receipt PDF generation failed:', err);
-            }).finally(() => {
-                document.body.removeChild(iframe);
-            });
-        }, 300);
-    };
-    iframe.src = receiptUrl;
-})();
 </script>
 
 <?php require APP_ROOT . '/app/views/layouts/footer.php'; ?>
