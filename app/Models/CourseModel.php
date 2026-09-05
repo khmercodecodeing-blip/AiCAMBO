@@ -58,7 +58,7 @@ class CourseModel
     }
 
     /**
-     * Get all active AI Pro accounts (QuantumVault reseller products and AI tools)
+     * Get all active AI Pro accounts (only products with type = 'ai')
      */
     public function getAllAiAccounts(): array
     {
@@ -71,17 +71,7 @@ class CourseModel
                  WHERE payment_status = 'completed'
                  GROUP BY course_id
              ) i ON c.id = i.course_id
-             WHERE c.is_active = 1 AND c.id NOT IN (1, 2, 3)
-               AND (
-                   c.type = 'ai'
-                   OR (c.qv_product_key IS NOT NULL AND c.qv_product_key <> '')
-                   OR LOWER(c.title) LIKE '%ai%'
-                   OR LOWER(c.title) LIKE '%gemini%'
-                   OR LOWER(c.title) LIKE '%chatgpt%'
-                   OR LOWER(c.title) LIKE '%gpt%'
-                   OR LOWER(c.title) LIKE '%canva%'
-                   OR LOWER(c.title) LIKE '%claude%'
-               )
+             WHERE c.is_active = 1 AND c.id NOT IN (1, 2, 3) AND c.type = 'ai'
              ORDER BY c.created_at DESC"
         );
         $this->populateStockInfo($courses);

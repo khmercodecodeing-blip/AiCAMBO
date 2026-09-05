@@ -111,7 +111,7 @@ if ($currentUri !== '/' && str_ends_with($currentUri, '/')) {
     </a>
     <a href="<?= APP_URL ?>/ai-accounts" aria-current="<?= in_array($currentUri, ['/ai-accounts', '/ai-pro'], true) ? 'page' : 'false' ?>" class="bottom-nav-item <?= in_array($currentUri, ['/ai-accounts', '/ai-pro'], true) ? 'active' : '' ?>">
         <span class="bottom-nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></span>
-        <span>AI Pro</span>
+        <span><?= e(t('catalog.ai_badge')) ?></span>
     </a>
     <a href="<?= APP_URL ?>/tools" aria-current="<?= $currentUri === '/tools' ? 'page' : 'false' ?>" class="bottom-nav-item <?= $currentUri === '/tools' ? 'active' : '' ?>">
         <span class="bottom-nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
