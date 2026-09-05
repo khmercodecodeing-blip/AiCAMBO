@@ -38,13 +38,23 @@ class QuantumVaultClient
         if (!self::enabled()) {
             return [];
         }
-        $cacheFile = (defined('APP_ROOT') ? APP_ROOT : dirname(__DIR__, 2)) . '/storage/qv_stock_cache.json';
-        if (file_exists($cacheFile) && (time() - filemtime($cacheFile) < 60)) {
-            $data = json_decode(@file_get_contents($cacheFile), true);
-            if (is_array($data)) {
-                return $data;
+        $storageDir = (defined('APP_ROOT') ? APP_ROOT : dirname(__DIR__, 2)) . '/storage';
+        if (!is_dir($storageDir)) {
+            @mkdir($storageDir, 0755, true);
+        }
+        $cacheFile = $storageDir . '/qv_stock_cache.json';
+        $fallbackCacheFile = sys_get_temp_dir() . '/qv_stock_cache.json';
+
+        // Check primary and fallback cache files
+        foreach ([$cacheFile, $fallbackCacheFile] as $file) {
+            if (file_exists($file) && (time() - filemtime($file) < 60)) {
+                $data = json_decode(@file_get_contents($file), true);
+                if (!empty($data) && is_array($data)) {
+                    return $data;
+                }
             }
         }
+
         try {
             $client = new self();
             $products = $client->products();
@@ -52,31 +62,44 @@ class QuantumVaultClient
             foreach ($products as $p) {
                 $key = $p['productKey'] ?? null;
                 if (!$key) continue;
+                $lowerKey = strtolower(trim($key));
                 $variants = $p['variants'] ?? [];
                 if ($variants && is_array($variants)) {
                     foreach ($variants as $v) {
                         $vKey = $v['key'] ?? '';
-                        $map[$key . ':' . $vKey] = [
+                        $lowerVKey = strtolower(trim($vKey));
+                        $item = [
                             'stock' => $v['stock'] ?? ($p['stock'] ?? null),
                             'inStock' => ($p['inStock'] ?? false) && ($v['inStock'] ?? false),
                             'unlimited' => !empty($p['unlimited']),
                         ];
+                        $map[$key . ':' . $vKey] = $item;
+                        $map[$lowerKey . ':' . $lowerVKey] = $item;
                     }
                 }
-                $map[$key] = [
+                $pItem = [
                     'stock' => $p['stock'] ?? null,
                     'inStock' => !empty($p['inStock']),
                     'unlimited' => !empty($p['unlimited']),
                 ];
+                $map[$key] = $pItem;
+                $map[$lowerKey] = $pItem;
             }
-            if ($map) {
-                @file_put_contents($cacheFile, json_encode($map));
+            if (!empty($map)) {
+                $encoded = json_encode($map);
+                if (@file_put_contents($cacheFile, $encoded) === false) {
+                    @file_put_contents($fallbackCacheFile, $encoded);
+                }
             }
             return $map;
         } catch (\Throwable $e) {
-            if (file_exists($cacheFile)) {
-                $data = json_decode(@file_get_contents($cacheFile), true);
-                if (is_array($data)) return $data;
+            foreach ([$cacheFile, $fallbackCacheFile] as $file) {
+                if (file_exists($file)) {
+                    $data = json_decode(@file_get_contents($file), true);
+                    if (!empty($data) && is_array($data)) {
+                        return $data;
+                    }
+                }
             }
             return [];
         }

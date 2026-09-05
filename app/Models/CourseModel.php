@@ -137,8 +137,33 @@ class CourseModel
             if (!empty($course['qv_product_key'])) {
                 $pKey = (string) $course['qv_product_key'];
                 $vKey = (string) ($course['qv_variant_key'] ?? '');
+                $pKeyLower = strtolower(trim($pKey));
+                $vKeyLower = strtolower(trim($vKey));
                 $lookup = ($vKey !== '') ? ($pKey . ':' . $vKey) : $pKey;
-                $info = $qvStockMap[$lookup] ?? ($qvStockMap[$pKey] ?? null);
+                $lookupLower = ($vKeyLower !== '') ? ($pKeyLower . ':' . $vKeyLower) : $pKeyLower;
+
+                $info = $qvStockMap[$lookup] ?? ($qvStockMap[$lookupLower] ?? ($qvStockMap[$pKey] ?? ($qvStockMap[$pKeyLower] ?? null)));
+
+                if (!$info && class_exists('\App\Services\QuantumVaultClient') && \App\Services\QuantumVaultClient::enabled()) {
+                    try {
+                        $client = new \App\Services\QuantumVaultClient();
+                        $qRes = $client->quote($pKeyLower, $vKeyLower !== '' ? $vKeyLower : null, 999999);
+                        $prod = $qRes['product'] ?? [];
+                        if (!empty($prod)) {
+                            $info = [
+                                'stock' => $prod['stock'] ?? null,
+                                'inStock' => !empty($prod['inStock']),
+                                'unlimited' => !empty($prod['unlimited']),
+                            ];
+                            $qvStockMap[$lookup] = $info;
+                            $qvStockMap[$lookupLower] = $info;
+                            $qvStockMap[$pKey] = $info;
+                            $qvStockMap[$pKeyLower] = $info;
+                        }
+                    } catch (\Throwable $e) {
+                    }
+                }
+
                 $course['is_qv'] = true;
                 if ($info) {
                     $course['stock_qty'] = $info['stock'];

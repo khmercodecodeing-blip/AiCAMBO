@@ -101,8 +101,17 @@ define('LICENSE_API_KEY', env('LICENSE_API_KEY', ''));
 define('QR_EXPIRY_MINUTES', (int) env('QR_EXPIRY_MINUTES', 4));
 
 // QuantumVault Supplier Integration
-define('QUANTUMVAULT_ENABLED', env('QUANTUMVAULT_ENABLED', '0'));
-define('QUANTUMVAULT_API_KEY', env('QUANTUMVAULT_API_KEY', ''));
+define('QUANTUMVAULT_ENABLED', env('QUANTUMVAULT_ENABLED', '1'));
+define('QUANTUMVAULT_API_KEY', env('QUANTUMVAULT_API_KEY', 'qv_live_7ac8f25cedbec7d746af80d011df47a530eb3299afbd13c27ffb26f0abe262eb'));
+
+if ((getenv('QUANTUMVAULT_API_KEY') === false || getenv('QUANTUMVAULT_API_KEY') === '') && QUANTUMVAULT_API_KEY !== '') {
+    putenv('QUANTUMVAULT_API_KEY=' . QUANTUMVAULT_API_KEY);
+    $_ENV['QUANTUMVAULT_API_KEY'] = QUANTUMVAULT_API_KEY;
+}
+if (getenv('QUANTUMVAULT_ENABLED') === false || getenv('QUANTUMVAULT_ENABLED') === '') {
+    putenv('QUANTUMVAULT_ENABLED=' . QUANTUMVAULT_ENABLED);
+    $_ENV['QUANTUMVAULT_ENABLED'] = QUANTUMVAULT_ENABLED;
+}
 
 // Session configuration
 if (session_status() === PHP_SESSION_NONE) {
