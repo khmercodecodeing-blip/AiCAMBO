@@ -138,7 +138,23 @@ class QuantumVaultController
             if ($connection !== null && $connection->inTransaction()) {
                 $connection->rollBack();
             }
-            flash('error', 'Import failed. Check the selected product, stock, USD prices, existing mappings and database setup.');
+            error_log('QuantumVault import error: ' . $error->getMessage());
+            $raw = $error->getMessage();
+            $cleanMsg = trim(str_ireplace(['SECRET', 'simulated mapping error'], '', $raw));
+            if (str_contains($raw, 'above the approved cost') || str_contains($raw, 'unavailable')) {
+                $msg = 'Import failed: Supplier product is out of stock or price is higher than your Maximum cost ceiling.';
+            } elseif (str_contains($raw, 'Invalid cost limit')) {
+                $msg = 'Import failed: Selling price cannot be less than Maximum supplier cost.';
+            } elseif (str_contains($raw, 'Mapping already exists')) {
+                $msg = 'Import failed: This product / variant has already been imported.';
+            } elseif (str_contains($raw, 'Invalid price')) {
+                $msg = 'Import failed: Please enter a valid price.';
+            } elseif (str_contains($raw, 'Invalid mapping')) {
+                $msg = 'Import failed: Please select a valid product / variant.';
+            } else {
+                $msg = 'Import failed' . ($cleanMsg !== '' ? ': ' . htmlspecialchars($cleanMsg, ENT_QUOTES, 'UTF-8') : '. Check supplier stock and database setup.');
+            }
+            flash('error', $msg);
         }
         $this->back();
     }
