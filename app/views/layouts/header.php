@@ -109,6 +109,10 @@ if ($currentUri !== '/' && str_ends_with($currentUri, '/')) {
         <span class="bottom-nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
         <span><?= e(t('nav.home')) ?></span>
     </a>
+    <a href="<?= APP_URL ?>/ai-accounts" aria-current="<?= in_array($currentUri, ['/ai-accounts', '/ai-pro'], true) ? 'page' : 'false' ?>" class="bottom-nav-item <?= in_array($currentUri, ['/ai-accounts', '/ai-pro'], true) ? 'active' : '' ?>">
+        <span class="bottom-nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></span>
+        <span>AI Pro</span>
+    </a>
     <a href="<?= APP_URL ?>/tools" aria-current="<?= $currentUri === '/tools' ? 'page' : 'false' ?>" class="bottom-nav-item <?= $currentUri === '/tools' ? 'active' : '' ?>">
         <span class="bottom-nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
         <span><?= e(t('nav.tools')) ?></span>

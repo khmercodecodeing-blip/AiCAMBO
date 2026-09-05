@@ -23,6 +23,11 @@ class CatalogTestModel extends App\Models\CourseModel
         $this->calls[] = $type;
         return array_values(array_filter($this->products, fn(array $product): bool => $product['type'] === $type));
     }
+    public function getAllAiAccounts(): array
+    {
+        $this->calls[] = 'ai';
+        return array_values(array_filter($this->products, fn(array $product): bool => ($product['type'] ?? '') === 'tool'));
+    }
 }
 
 $model = new CatalogTestModel();
@@ -34,7 +39,12 @@ $reflection = new ReflectionClass(App\Controllers\CourseController::class);
 $controller = $reflection->newInstanceWithoutConstructor();
 $reflection->getProperty('courseModel')->setValue($controller, $model);
 
-foreach ([['index', '/', 'all', true, true, true], ['toolsPage', '/tools', 'tool', true, false, true], ['coursesPage', '/courses', 'course', false, true, false]] as [$method, $path, $filter, $hasTool, $hasCourse, $hasTelegram]) {
+foreach ([
+    ['index', '/', 'all', true, true, true],
+    ['aiAccountsPage', '/ai-accounts', 'ai', true, false, false],
+    ['toolsPage', '/tools', 'tool', true, false, true],
+    ['coursesPage', '/courses', 'course', false, true, false]
+] as [$method, $path, $filter, $hasTool, $hasCourse, $hasTelegram]) {
     $_SERVER['REQUEST_URI'] = $path;
     ob_start();
     $controller->$method();
@@ -56,9 +66,9 @@ foreach ([['index', '/', 'all', true, true, true], ['toolsPage', '/tools', 'tool
             throw new RuntimeException('Incorrect active navigation tab: ' . $path);
         }
     }
-    if ($xpath->query('//nav[@class="bottom-nav"]/*')->length !== 5
+    if ($xpath->query('//nav[@class="bottom-nav"]/*')->length !== 6
         || !str_contains($html, 'id="course-search-input"')) {
-        throw new RuntimeException('Catalog pages require search and five mobile navigation controls.');
+        throw new RuntimeException('Catalog pages require search and six mobile navigation controls.');
     }
 }
 $model->products = [];
