@@ -203,7 +203,11 @@ class QuantumVaultController
 
     private function configured(): bool
     {
-        return QuantumVaultClient::enabled() && trim((string) getenv('QUANTUMVAULT_API_KEY')) !== '';
+        $key = getenv('QUANTUMVAULT_API_KEY');
+        if ($key === false || $key === '') {
+            $key = $_ENV['QUANTUMVAULT_API_KEY'] ?? (defined('QUANTUMVAULT_API_KEY') ? QUANTUMVAULT_API_KEY : '');
+        }
+        return QuantumVaultClient::enabled() && trim((string) $key) !== '';
     }
 
     private function requireConfigured(): void

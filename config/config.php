@@ -100,6 +100,10 @@ define('LICENSE_API_KEY', env('LICENSE_API_KEY', ''));
 // QR Settings
 define('QR_EXPIRY_MINUTES', (int) env('QR_EXPIRY_MINUTES', 4));
 
+// QuantumVault Supplier Integration
+define('QUANTUMVAULT_ENABLED', env('QUANTUMVAULT_ENABLED', '0'));
+define('QUANTUMVAULT_API_KEY', env('QUANTUMVAULT_API_KEY', ''));
+
 // Session configuration
 if (session_status() === PHP_SESSION_NONE) {
     session_start();

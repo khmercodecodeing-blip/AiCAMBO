@@ -9,13 +9,28 @@ class QuantumVaultClient
 
     public function __construct(?string $apiKey = null, ?callable $transport = null)
     {
-        $this->apiKey = $apiKey ?? (string) getenv('QUANTUMVAULT_API_KEY');
+        $resolvedKey = $apiKey;
+        if ($resolvedKey === null || $resolvedKey === '') {
+            $envVal = getenv('QUANTUMVAULT_API_KEY');
+            if ($envVal !== false && $envVal !== '') {
+                $resolvedKey = $envVal;
+            } elseif (!empty($_ENV['QUANTUMVAULT_API_KEY'])) {
+                $resolvedKey = $_ENV['QUANTUMVAULT_API_KEY'];
+            } elseif (defined('QUANTUMVAULT_API_KEY')) {
+                $resolvedKey = QUANTUMVAULT_API_KEY;
+            }
+        }
+        $this->apiKey = (string) $resolvedKey;
         $this->transport = $transport ? \Closure::fromCallable($transport) : null;
     }
 
     public static function enabled(): bool
     {
-        return getenv('QUANTUMVAULT_ENABLED') === '1';
+        $enabled = getenv('QUANTUMVAULT_ENABLED');
+        if ($enabled === false || $enabled === null || $enabled === '') {
+            $enabled = $_ENV['QUANTUMVAULT_ENABLED'] ?? (defined('QUANTUMVAULT_ENABLED') ? QUANTUMVAULT_ENABLED : '0');
+        }
+        return (string) $enabled === '1';
     }
 
     public function products(): array
