@@ -58,7 +58,7 @@ if ($currentUri !== '/' && str_ends_with($currentUri, '/')) {
         </a>
 
         <!-- Navbar Search -->
-        <?php if (in_array($currentUri, ['/', '/tools', '/courses'], true)): ?>
+        <?php if (in_array($currentUri, ['/', '/ai-accounts', '/ai-pro', '/tools', '/courses'], true)): ?>
         <div class="navbar-search">
             <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); display: flex; align-items: center; pointer-events: none;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -74,6 +74,7 @@ if ($currentUri !== '/' && str_ends_with($currentUri, '/')) {
 
         <div class="navbar-links" id="primary-navigation">
             <a href="<?= APP_URL ?>" aria-current="<?= $currentUri === '/' ? 'page' : 'false' ?>" class="<?= $currentUri === '/' ? 'active' : '' ?>"><?= e(t('nav.home')) ?></a>
+            <a href="<?= APP_URL ?>/ai-accounts" aria-current="<?= in_array($currentUri, ['/ai-accounts', '/ai-pro'], true) ? 'page' : 'false' ?>" class="<?= in_array($currentUri, ['/ai-accounts', '/ai-pro'], true) ? 'active' : '' ?>"><?= e(t('nav.ai_accounts')) ?></a>
             <a href="<?= APP_URL ?>/tools" aria-current="<?= $currentUri === '/tools' ? 'page' : 'false' ?>" class="<?= $currentUri === '/tools' ? 'active' : '' ?>"><?= e(t('nav.tools')) ?></a>
             <a href="<?= APP_URL ?>/courses" aria-current="<?= $currentUri === '/courses' ? 'page' : 'false' ?>" class="<?= $currentUri === '/courses' ? 'active' : '' ?>"><?= e(t('nav.courses')) ?></a>
             <?php if (isset($_SESSION['user_email'])): ?>

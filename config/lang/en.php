@@ -10,6 +10,7 @@ return [
     'nav.account'      => 'Account',
     'nav.support'      => 'Support',
     'nav.home'         => 'Home',
+    'nav.ai_accounts'  => 'AI Pro Accounts',
 
     'search.placeholder' => 'Search...',
 
@@ -17,6 +18,13 @@ return [
     'home.subtitle' => 'Pay automatically via KHQR to get instant access to your course or download link.',
     'catalog.all_title' => 'All Products',
     'catalog.all_subtitle' => 'Software, digital tools and courses',
+    'catalog.ai_title' => 'AI Pro Accounts',
+    'catalog.ai_subtitle' => 'Official AI Pro accounts including Gemini Pro, ChatGPT Plus, Canva Pro and more with instant automated delivery',
+    'catalog.ai_empty' => 'No AI Pro accounts available yet. Please check back later!',
+    'catalog.tab_all'  => 'All Products',
+    'catalog.tab_ai'   => 'Account AI Pro',
+    'catalog.tab_tools'=> 'Tools',
+    'catalog.tab_courses' => 'Courses',
     'catalog.courses_title' => 'All Courses',
     'catalog.courses_subtitle' => 'Online courses and learning resources',
     'catalog.courses_empty' => 'No courses available yet.',

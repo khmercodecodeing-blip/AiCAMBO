@@ -97,6 +97,14 @@ $router->get('/tools', function () {
     (new CourseController())->toolsPage();
 });
 
+// AI Pro Accounts catalog
+$router->get('/ai-accounts', function () {
+    (new CourseController())->aiAccountsPage();
+});
+$router->get('/ai-pro', function () {
+    (new CourseController())->aiAccountsPage();
+});
+
 $router->get('/courses', function () {
     (new CourseController())->coursesPage();
 });

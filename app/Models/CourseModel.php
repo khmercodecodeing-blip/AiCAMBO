@@ -58,6 +58,36 @@ class CourseModel
     }
 
     /**
+     * Get all active AI Pro accounts (QuantumVault reseller products and AI tools)
+     */
+    public function getAllAiAccounts(): array
+    {
+        $courses = $this->db->fetchAll(
+            "SELECT c.*, COALESCE(i.student_count, 0) as student_count
+             FROM courses c
+             LEFT JOIN (
+                 SELECT course_id, COUNT(*) as student_count
+                 FROM invoices
+                 WHERE payment_status = 'completed'
+                 GROUP BY course_id
+             ) i ON c.id = i.course_id
+             WHERE c.is_active = 1 AND c.id NOT IN (1, 2, 3)
+               AND (
+                   (c.qv_product_key IS NOT NULL AND c.qv_product_key <> '')
+                   OR LOWER(c.title) LIKE '%ai%'
+                   OR LOWER(c.title) LIKE '%gemini%'
+                   OR LOWER(c.title) LIKE '%chatgpt%'
+                   OR LOWER(c.title) LIKE '%gpt%'
+                   OR LOWER(c.title) LIKE '%canva%'
+                   OR LOWER(c.title) LIKE '%claude%'
+               )
+             ORDER BY c.created_at DESC"
+        );
+        $this->populateStockInfo($courses);
+        return $courses;
+    }
+
+    /**
      * Get all courses (including inactive) for admin
      */
     public function getAllAdmin(): array

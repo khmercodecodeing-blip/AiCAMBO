@@ -71,4 +71,15 @@ class CourseController
         $pageTitle = t('nav.courses') . ' — ' . APP_NAME;
         require APP_ROOT . '/app/views/courses/tools.php';
     }
+
+    /**
+     * Display catalog of AI Pro accounts
+     */
+    public function aiAccountsPage(): void
+    {
+        $courses = $this->courseModel->getAllAiAccounts();
+        $catalogType = 'ai';
+        $pageTitle = t('nav.ai_accounts') . ' — ' . APP_NAME;
+        require APP_ROOT . '/app/views/courses/tools.php';
+    }
 }

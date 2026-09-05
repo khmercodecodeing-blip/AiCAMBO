@@ -1,7 +1,7 @@
 <?php
 $catalogType = $catalogType ?? 'tool';
-$catalogTitle = ['all' => 'catalog.all_title', 'tool' => 'tools.title', 'course' => 'catalog.courses_title'][$catalogType];
-$catalogSubtitle = ['all' => 'catalog.all_subtitle', 'tool' => 'tools.subtitle', 'course' => 'catalog.courses_subtitle'][$catalogType];
+$catalogTitle = ['all' => 'catalog.all_title', 'tool' => 'tools.title', 'course' => 'catalog.courses_title', 'ai' => 'catalog.ai_title'][$catalogType] ?? 'catalog.all_title';
+$catalogSubtitle = ['all' => 'catalog.all_subtitle', 'tool' => 'tools.subtitle', 'course' => 'catalog.courses_subtitle', 'ai' => 'catalog.ai_subtitle'][$catalogType] ?? 'catalog.all_subtitle';
 require APP_ROOT . '/app/views/layouts/header.php';
 ?>
 
@@ -12,8 +12,31 @@ require APP_ROOT . '/app/views/layouts/header.php';
             <p><?= e(t($catalogSubtitle)) ?></p>
         </div>
 
+        <!-- Category Filter Tabs -->
+        <div class="catalog-tabs-wrapper">
+            <div class="catalog-tabs" role="tablist">
+                <a href="<?= APP_URL ?>" class="catalog-tab <?= $catalogType === 'all' ? 'active' : '' ?>">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                    <span><?= e(t('catalog.tab_all')) ?></span>
+                </a>
+                <a href="<?= APP_URL ?>/ai-accounts" class="catalog-tab catalog-tab-ai <?= $catalogType === 'ai' ? 'active' : '' ?>">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                    <span><?= e(t('catalog.tab_ai')) ?></span>
+                    <span class="tab-badge-glow">PRO</span>
+                </a>
+                <a href="<?= APP_URL ?>/tools" class="catalog-tab <?= $catalogType === 'tool' ? 'active' : '' ?>">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                    <span><?= e(t('catalog.tab_tools')) ?></span>
+                </a>
+                <a href="<?= APP_URL ?>/courses" class="catalog-tab <?= $catalogType === 'course' ? 'active' : '' ?>">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                    <span><?= e(t('catalog.tab_courses')) ?></span>
+                </a>
+            </div>
+        </div>
+
             <div class="course-grid">
-                <?php if ($catalogType !== 'course'): ?>
+                <?php if ($catalogType !== 'course' && $catalogType !== 'ai'): ?>
                 <article class="glass-card course-card telegram-product-card">
                     <a class="card-image" href="<?= APP_URL ?>/telegram-adder-pro" aria-label="Telegram Adder Pro">
                         <img src="<?= APP_URL ?>/PhotoTool/Aderr.PNG" alt="Telegram Adder Pro" width="1631" height="875" fetchpriority="high">
@@ -30,6 +53,8 @@ require APP_ROOT . '/app/views/layouts/header.php';
                 <?php endif; ?>
                 <?php if ($catalogType === 'course' && empty($courses)): ?>
                     <p class="text-muted catalog-empty"><?= e(t('catalog.courses_empty')) ?></p>
+                <?php elseif ($catalogType === 'ai' && empty($courses)): ?>
+                    <p class="text-muted catalog-empty"><?= e(t('catalog.ai_empty')) ?></p>
                 <?php endif; ?>
                 <?php foreach ($courses ?? [] as $course): ?>
                     <div class="glass-card course-card">
@@ -73,7 +98,7 @@ require APP_ROOT . '/app/views/layouts/header.php';
                         </div>
                         <div class="card-body">
                             <h3 class="card-title"><?= e($course['title']) ?></h3>
-                            <p class="card-desc"><?= e($course['description']) ?></p>
+                            <p class="card-desc"><?= e($course['description'] ?? '') ?></p>
 
                             <div style="font-size:0.85rem;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
                                 <?php if (!empty($course['is_qv']) || isset($course['stock_qty']) || !empty($course['unlimited_stock'])): ?>
