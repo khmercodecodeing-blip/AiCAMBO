@@ -152,6 +152,25 @@ function initAdminSidebarMobile() {
 }
 
 /**
+ * Get normalized API base URL that prevents cross-origin CORS errors
+ */
+function getAppBaseUrl() {
+    if (typeof window.APP_URL === 'string' && window.APP_URL) {
+        try {
+            if (window.APP_URL.startsWith('http')) {
+                const url = new URL(window.APP_URL);
+                if (url.origin === window.location.origin) {
+                    return window.APP_URL.replace(/\/+$/, '');
+                }
+            } else {
+                return window.APP_URL.replace(/\/+$/, '');
+            }
+        } catch (e) {}
+    }
+    return '';
+}
+
+/**
  * Buy Now button confirmations (Quick Checkout via Custom Modal)
  */
 function initBuyButtons() {
@@ -275,7 +294,8 @@ function initBuyButtons() {
             if (promoMsg) promoMsg.style.display = 'none';
 
             try {
-                const response = await fetch((window.APP_URL || '/web') + '/api/check-promo', {
+                const apiBase = getAppBaseUrl();
+                const response = await fetch(apiBase + '/api/check-promo', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -284,8 +304,14 @@ function initBuyButtons() {
                     body: JSON.stringify({ course_id: activeCourseId, promo_code: promoVal })
                 });
 
-                if (!response.ok) throw new Error('Network error');
-                const data = await response.json();
+                let data = null;
+                try {
+                    data = await response.json();
+                } catch (e) {}
+
+                if (!response.ok || !data) {
+                    throw new Error((data && data.message) || 'Network error');
+                }
 
                 if (data.status === 'success') {
                     if (summaryDiscountAmount) {
@@ -341,7 +367,8 @@ function initBuyButtons() {
             showView('loading');
 
             try {
-                const response = await fetch((window.APP_URL || '/web') + '/api/quick-checkout', {
+                const apiBase = getAppBaseUrl();
+                const response = await fetch(apiBase + '/api/quick-checkout', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -350,11 +377,14 @@ function initBuyButtons() {
                     body: JSON.stringify({ course_id: activeCourseId, promo_code: activePromoCode, agree_policy: true })
                 });
 
-                if (!response.ok) throw new Error('Network response not ok');
-                const data = await response.json();
+                let data = null;
+                try {
+                    data = await response.json();
+                } catch (jsonErr) {}
 
-                if (data.status !== 'success') {
-                    errorTextEl.textContent = data.message || 'Payment system error. Please try again.';
+                if (!response.ok || !data || data.status !== 'success') {
+                    const errorMsg = (data && data.message) ? data.message : 'Payment system error. Please try again.';
+                    if (errorTextEl) errorTextEl.textContent = errorMsg;
                     showView('error');
                     return;
                 }
@@ -427,7 +457,16 @@ function initBuyButtons() {
                     isChecking = true;
 
                     try {
-                        const checkRes = await fetch(data.check_url, {
+                        let checkUrl = data.check_url;
+                        if (checkUrl && checkUrl.startsWith('http')) {
+                            try {
+                                const parsed = new URL(checkUrl);
+                                if (parsed.origin !== window.location.origin) {
+                                    checkUrl = parsed.pathname + parsed.search;
+                                }
+                            } catch (e) {}
+                        }
+                        const checkRes = await fetch(checkUrl, {
                             headers: { 'Accept': 'application/json' }
                         });
                         const pollData = await checkRes.json();
@@ -437,13 +476,13 @@ function initBuyButtons() {
                             clearInterval(countdownInterval);
 
                             const successDescEl = document.getElementById('modal-success-desc');
-                            if (pollData.product_type === 'tool') {
+                            if (pollData.product_type === 'tool' || pollData.product_type === 'ai') {
                                 if (successDescEl) {
-                                    successDescEl.textContent = 'Your payment has been confirmed. Click below to download your tool:';
+                                    successDescEl.textContent = 'Your payment has been confirmed. Click below to access your tool/account:';
                                 }
                                 if (telegramBtn) {
-                                    telegramBtn.textContent = 'Download Tool';
-                                    telegramBtn.href = pollData.download_link;
+                                    telegramBtn.textContent = 'Access Tool / Account';
+                                    telegramBtn.href = pollData.download_link || (getAppBaseUrl() + '/payment/success/' + pollData.invoice_no);
                                     telegramBtn.className = 'custom-modal-btn tool-btn';
                                     telegramBtn.style.display = 'inline-block';
                                 }

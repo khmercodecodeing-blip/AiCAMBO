@@ -21,7 +21,7 @@ class QuantumVaultDeliveryService
             return [];
         }
         if (!QuantumVaultClient::enabled() || ($course['currency'] ?? '') !== 'USD'
-            || (int) ($course['id'] ?? 0) <= 3 || ($course['type'] ?? '') !== 'tool'
+            || (int) ($course['id'] ?? 0) <= 3 || !in_array($course['type'] ?? '', ['tool', 'ai'], true)
             || !is_finite($amount) || $amount <= 0 || (float) $course['qv_max_cost'] > $amount) {
             throw new \RuntimeException('Supplier checkout unavailable.');
         }

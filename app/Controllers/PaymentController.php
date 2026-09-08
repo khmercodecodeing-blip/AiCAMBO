@@ -421,6 +421,7 @@ class PaymentController
         try {
             return \App\Services\QuantumVaultDeliveryService::checkout($course, $amount);
         } catch (\Throwable $error) {
+            error_log('QuantumVault checkout error: ' . $error->getMessage());
             $message = 'This account is temporarily unavailable. Please try again later.';
             if ($json) {
                 http_response_code(503);

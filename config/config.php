@@ -32,7 +32,14 @@ if (file_exists($envFile)) {
  * Get environment variable with optional default
  */
 function env(string $key, $default = null) {
-    return $_ENV[$key] ?? getenv($key) ?: $default;
+    if (array_key_exists($key, $_ENV)) {
+        return $_ENV[$key];
+    }
+    $val = getenv($key);
+    if ($val !== false) {
+        return $val;
+    }
+    return $default;
 }
 
 // Database Configuration
@@ -48,16 +55,22 @@ define('APP_NAME', env('APP_NAME', 'CourseHub'));
 // Admin Configuration
 define('ADMIN_PREFIX', env('ADMIN_PREFIX', 'admin'));
 
-$detectedUrl = 'http://localhost' . BASE_PATH;
-if (isset($_SERVER['HTTP_HOST'])) {
-    $scheme = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
-    $detectedUrl = $scheme . '://' . $_SERVER['HTTP_HOST'] . BASE_PATH;
-}
-$configuredUrl = env('APP_URL');
-if (empty($configuredUrl) || $configuredUrl === 'http://localhost/web') {
-    define('APP_URL', rtrim($detectedUrl, '/'));
-} else {
-    define('APP_URL', rtrim($configuredUrl, '/'));
+if (!defined('APP_URL')) {
+    $detectedUrl = 'http://localhost' . BASE_PATH;
+    if (isset($_SERVER['HTTP_HOST'])) {
+        $scheme = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
+        $detectedUrl = $scheme . '://' . $_SERVER['HTTP_HOST'] . BASE_PATH;
+    }
+    $configuredUrl = env('APP_URL');
+    $isLocalhost = isset($_SERVER['HTTP_HOST']) && (
+        str_contains($_SERVER['HTTP_HOST'], 'localhost') || 
+        str_contains($_SERVER['HTTP_HOST'], '127.0.0.1')
+    );
+    if (empty($configuredUrl) || $configuredUrl === 'http://localhost/web' || ($isLocalhost && !str_contains((string)$configuredUrl, 'localhost') && !str_contains((string)$configuredUrl, '127.0.0.1'))) {
+        define('APP_URL', rtrim($detectedUrl, '/'));
+    } else {
+        define('APP_URL', rtrim($configuredUrl, '/'));
+    }
 }
 
 define('ADMIN_URL', APP_URL . '/' . ADMIN_PREFIX);

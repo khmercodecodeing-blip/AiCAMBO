@@ -182,6 +182,11 @@ class CourseModel
                             $qvStockMap[$pKeyLower] = $info;
                         }
                     } catch (\Throwable $e) {
+                        $info = [
+                            'stock' => 0,
+                            'inStock' => false,
+                            'unlimited' => false,
+                        ];
                     }
                 }
 
@@ -192,7 +197,7 @@ class CourseModel
                     $course['unlimited_stock'] = !empty($info['unlimited']);
                 } else {
                     $course['stock_qty'] = null;
-                    $course['in_stock'] = true;
+                    $course['in_stock'] = false;
                     $course['unlimited_stock'] = false;
                 }
             } elseif (in_array($course['type'] ?? '', ['tool', 'ai'], true)) {
