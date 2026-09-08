@@ -205,13 +205,26 @@ body::before {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 54px;
+    gap: 5px;
+    min-width: 58px;
     min-height: 32px;
     padding: 4px 10px;
     border-radius: 16px;
-    font-size: 0.75rem;
+    font-size: 0.78rem;
     font-weight: 700;
     color: var(--text-muted);
+    transition: all 0.2s ease;
+}
+
+.lang-flag {
+    width: 18px;
+    height: 12px;
+    border-radius: 2px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.28);
+    flex-shrink: 0;
+    display: inline-block;
+    vertical-align: middle;
+    overflow: hidden;
 }
 
 .lang-switcher > .ui-icon {
@@ -225,6 +238,7 @@ body::before {
 .lang-switcher a.active:hover {
     background: var(--gradient-primary);
     color: #fff;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
 }
 
 .lang-switcher a:hover {

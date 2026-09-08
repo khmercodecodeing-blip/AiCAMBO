@@ -36,7 +36,7 @@ if ($currentUri !== '/' && str_ends_with($currentUri, '/')) {
     <link rel="apple-touch-icon" href="<?= asset('images/icons/apple-touch-icon.png') ?>">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="<?= asset('css/style.css') ?>?v=2.0.3">
+    <link rel="stylesheet" href="<?= asset('css/style.css') ?>?v=2.0.4">
 
     <!-- SweetAlert2 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
@@ -96,8 +96,55 @@ if ($currentUri !== '/' && str_ends_with($currentUri, '/')) {
             <?php endif; ?>
             <div class="lang-switcher" role="group" aria-label="<?= current_lang() === 'km' ? 'ភាសា' : 'Language' ?>">
                 <svg class="ui-icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="<?= asset('images/icons/ui.svg') ?>#languages"></use></svg>
-                <a href="<?= APP_URL ?>/lang/km" lang="km" hreflang="km" title="ភាសាខ្មែរ" aria-current="<?= current_lang() === 'km' ? 'true' : 'false' ?>" class="<?= current_lang() === 'km' ? 'active' : '' ?>">ខ្មែរ</a>
-                <a href="<?= APP_URL ?>/lang/en" lang="en" hreflang="en" title="English" aria-current="<?= current_lang() === 'en' ? 'true' : 'false' ?>" class="<?= current_lang() === 'en' ? 'active' : '' ?>">EN</a>
+                <a href="<?= APP_URL ?>/lang/km" lang="km" hreflang="km" title="ភាសាខ្មែរ" aria-current="<?= current_lang() === 'km' ? 'true' : 'false' ?>" class="<?= current_lang() === 'km' ? 'active' : '' ?>">
+                    <svg class="lang-flag" viewBox="0 0 48 32" aria-hidden="true" focusable="false">
+                        <rect width="48" height="8" fill="#032ea6"/>
+                        <rect y="8" width="48" height="16" fill="#ed1b24"/>
+                        <rect y="24" width="48" height="8" fill="#032ea6"/>
+                        <g fill="#ffffff">
+                            <rect x="12.5" y="21.5" width="23" height="1.2" rx="0.3"/>
+                            <rect x="13.8" y="20.2" width="20.4" height="1.1" rx="0.3"/>
+                            <rect x="15" y="19" width="18" height="1" rx="0.2"/>
+                            <path d="M23 11 C23 10.4 23.6 9.4 24 9.4 C24.4 9.4 25 10.4 25 11 L25.7 14.5 L22.3 14.5 Z"/>
+                            <rect x="22.2" y="14.5" width="3.6" height="4.5" rx="0.2"/>
+                            <path d="M17.8 13 C17.8 12.5 18.3 11.7 18.6 11.7 C18.9 11.7 19.4 12.5 19.4 13 L19.9 15.8 L17.3 15.8 Z"/>
+                            <rect x="17.2" y="15.8" width="2.8" height="3.2" rx="0.2"/>
+                            <path d="M28.6 13 C28.6 12.5 29.1 11.7 29.4 11.7 C29.7 11.7 30.2 12.5 30.2 13 L30.7 15.8 L28.1 15.8 Z"/>
+                            <rect x="28" y="15.8" width="2.8" height="3.2" rx="0.2"/>
+                            <path d="M14.6 15.5 L15.4 14.6 L16.2 15.5 L16.2 19 L14.6 19 Z"/>
+                            <path d="M31.8 15.5 L32.6 14.6 L33.4 15.5 L33.4 19 L31.8 19 Z"/>
+                            <rect x="16" y="17.2" width="16" height="1.8"/>
+                        </g>
+                        <g fill="#ed1b24">
+                            <rect x="23.3" y="16.5" width="1.4" height="2.5" rx="0.4"/>
+                            <rect x="18" y="16.8" width="1.2" height="2.2" rx="0.3"/>
+                            <rect x="28.8" y="16.8" width="1.2" height="2.2" rx="0.3"/>
+                            <rect x="20.5" y="17.5" width="0.7" height="1.5"/>
+                            <rect x="21.6" y="17.5" width="0.7" height="1.5"/>
+                            <rect x="25.7" y="17.5" width="0.7" height="1.5"/>
+                            <rect x="26.8" y="17.5" width="0.7" height="1.5"/>
+                        </g>
+                    </svg>
+                    <span>ខ្មែរ</span>
+                </a>
+                <a href="<?= APP_URL ?>/lang/en" lang="en" hreflang="en" title="English" aria-current="<?= current_lang() === 'en' ? 'true' : 'false' ?>" class="<?= current_lang() === 'en' ? 'active' : '' ?>">
+                    <svg class="lang-flag" viewBox="0 0 60 30" aria-hidden="true" focusable="false">
+                        <clipPath id="uk-flag-clip">
+                            <path d="M0,0 v30 h60 v-30 z"/>
+                        </clipPath>
+                        <clipPath id="uk-flag-diag">
+                            <path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/>
+                        </clipPath>
+                        <g clip-path="url(#uk-flag-clip)">
+                            <path d="M0,0 v30 h60 v-30 z" fill="#012169"/>
+                            <path d="M0,0 L60,30 M60,0 L0,30" stroke="#ffffff" stroke-width="6"/>
+                            <path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#uk-flag-diag)" stroke="#C8102E" stroke-width="4"/>
+                            <path d="M30,0 v30 M0,15 h60" stroke="#ffffff" stroke-width="10"/>
+                            <path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/>
+                        </g>
+                    </svg>
+                    <span>EN</span>
+                </a>
             </div>
         </div>
     </div>
