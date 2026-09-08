@@ -253,14 +253,38 @@ class PaymentController
 
         // Already completed — return success with product details
         if ($invoice['payment_status'] === 'completed') {
+            (new \App\Services\LicenseDeliveryService($this->invoiceModel))->deliver($invoice);
+            (new \App\Services\QuantumVaultDeliveryService())->deliver($invoice);
+            $fresh = $this->invoiceModel->getByInvoiceNo($invoiceNo) ?? $invoice;
+
+            $isQv = !empty($fresh['qv_product_key']);
+            $deliveredStock = $fresh['delivered_stock'] ?? '';
+            $directLink = null;
+            if (!empty($deliveredStock) && preg_match('/https?:\/\/[^\s\'"<>\)]+/', $deliveredStock, $m)) {
+                $directLink = rtrim($m[0], '.,;:');
+            }
+
+            $appUrl = defined('APP_URL') ? APP_URL : '';
+            $productType = $isQv ? 'tool' : ($fresh['product_type'] ?? 'course');
+            $telegramLink = (!$isQv && $productType === 'course') ? ($fresh['telegram_link'] ?? null) : null;
+            $downloadLink = $directLink ?: ($fresh['download_link'] ?? null);
+            if ($isQv && empty($downloadLink)) {
+                $downloadLink = $appUrl . '/payment/success/' . $invoiceNo;
+            }
+
             echo json_encode([
-                'status'        => 'completed',
-                'delivery_status' => (new \App\Services\LicenseDeliveryService($this->invoiceModel))->deliver($invoice),
-                'account_delivery_status' => (new \App\Services\QuantumVaultDeliveryService())->deliver($invoice),
-                'product_type'  => $invoice['product_type'] ?? 'course',
-                'telegram_link' => $invoice['telegram_link'] ?? null,
-                'download_link' => $invoice['download_link'] ?? null,
-                'invoice_no'    => $invoiceNo,
+                'status'                  => 'completed',
+                'delivery_status'         => (new \App\Services\LicenseDeliveryService($this->invoiceModel))->deliver($fresh),
+                'account_delivery_status' => $fresh['qv_status'] ?? 'pending',
+                'product_type'            => $productType,
+                'is_qv'                   => $isQv,
+                'direct_link'             => $directLink,
+                'delivered_stock'         => $deliveredStock,
+                'telegram_link'           => $telegramLink,
+                'download_link'           => $downloadLink,
+                'account_download_url'    => $isQv ? ($appUrl . '/payment/account/' . $invoiceNo) : null,
+                'success_url'             => $appUrl . '/payment/success/' . $invoiceNo,
+                'invoice_no'              => $invoiceNo,
             ]);
             return;
         }
@@ -294,30 +318,51 @@ class PaymentController
 
                         if ($updated) {
                             (new \App\Services\QuantumVaultDeliveryService())->deliver(array_replace($invoice, ['payment_status' => 'completed']));
+                            $fresh = $this->invoiceModel->getByInvoiceNo($invoiceNo) ?? $invoice;
+
                             // Increment promo code uses if applied
-                            if (!empty($invoice['promo_code'])) {
+                            if (!empty($fresh['promo_code'])) {
                                 try {
                                     $promoModel = new \App\Models\PromoCodeModel();
-                                    $promoModel->incrementUses($invoice['promo_code']);
+                                    $promoModel->incrementUses($fresh['promo_code']);
                                 } catch (\Throwable $e) {
                                     error_log('Polling increment promo uses error: ' . $e->getMessage());
                                 }
                             }
 
                             // Auto-register license if applicable
-                            if (!empty($invoice['license_key'])) {
-                                $this->registerLicense($invoice);
+                            if (!empty($fresh['license_key'])) {
+                                $this->registerLicense($fresh);
                             }
 
-                            // Generate Telegram invite link only if it is a course
-                            $telegramLink = (($invoice['product_type'] ?? 'course') === 'course') ? $this->generateTelegramLink($invoice) : null;
+                            $isQv = !empty($fresh['qv_product_key']);
+                            $deliveredStock = $fresh['delivered_stock'] ?? '';
+                            $directLink = null;
+                            if (!empty($deliveredStock) && preg_match('/https?:\/\/[^\s\'"<>\)]+/', $deliveredStock, $m)) {
+                                $directLink = rtrim($m[0], '.,;:');
+                            }
+
+                            $appUrl = defined('APP_URL') ? APP_URL : '';
+                            $productType = $isQv ? 'tool' : ($fresh['product_type'] ?? 'course');
+                            // Generate Telegram invite link only if it is an actual course (not QuantumVault)
+                            $telegramLink = (!$isQv && $productType === 'course') ? $this->generateTelegramLink($fresh) : null;
+                            $downloadLink = $directLink ?: ($fresh['download_link'] ?? null);
+                            if ($isQv && empty($downloadLink)) {
+                                $downloadLink = $appUrl . '/payment/success/' . $invoiceNo;
+                            }
 
                             echo json_encode([
-                                'status'        => 'completed',
-                                'product_type'  => $invoice['product_type'] ?? 'course',
-                                'telegram_link' => $telegramLink,
-                                'download_link' => $invoice['download_link'] ?? null,
-                                'invoice_no'    => $invoiceNo,
+                                'status'               => 'completed',
+                                'product_type'         => $productType,
+                                'is_qv'                => $isQv,
+                                'qv_status'            => $fresh['qv_status'] ?? null,
+                                'direct_link'          => $directLink,
+                                'delivered_stock'      => $deliveredStock,
+                                'telegram_link'        => $telegramLink,
+                                'download_link'        => $downloadLink,
+                                'account_download_url' => $isQv ? ($appUrl . '/payment/account/' . $invoiceNo) : null,
+                                'success_url'          => $appUrl . '/payment/success/' . $invoiceNo,
+                                'invoice_no'           => $invoiceNo,
                             ]);
                             return;
                         }

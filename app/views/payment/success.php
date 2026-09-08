@@ -68,6 +68,19 @@ require APP_ROOT . '/app/views/layouts/header.php';
             <section class="purchase-delivery" aria-labelledby="account-delivery-title" style="min-width:0;text-align:left;">
                 <h2 id="account-delivery-title" style="font-size:1.1rem;">ព័ត៌មាន Account (Account Details)</h2>
                 <?php if (($invoice['qv_status'] ?? '') === 'delivered' && !empty($invoice['delivered_stock'])): ?>
+                    <?php
+                        $qvDirectLink = null;
+                        if (preg_match('/https?:\/\/[^\s\'"<>\)]+/', $invoice['delivered_stock'], $qvMatches)) {
+                            $qvDirectLink = rtrim($qvMatches[0], '.,;:');
+                        }
+                    ?>
+                    <?php if ($qvDirectLink): ?>
+                        <div style="margin: 14px 0 18px 0;">
+                            <a class="btn btn-primary" href="<?= e($qvDirectLink) ?>" target="_blank" rel="noopener noreferrer" style="background: var(--gradient-primary); font-size: 1rem; font-weight: 700; padding: 12px 24px; display: inline-flex; align-items: center; gap: 8px;">
+                                🚀 បើក Link (Open Link)
+                            </a>
+                        </div>
+                    <?php endif; ?>
                     <pre style="white-space:pre-wrap;overflow-wrap:anywhere;font-size:0.9rem;max-width:100%;padding:12px 0;"><?= e($invoice['delivered_stock']) ?></pre>
                     <a class="btn btn-primary" href="<?= APP_URL ?>/payment/account/<?= e($invoice['invoice_no']) ?>">ទាញយក Account (.txt)</a>
                 <?php else: ?>

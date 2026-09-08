@@ -476,21 +476,55 @@ function initBuyButtons() {
                             clearInterval(countdownInterval);
 
                             const successDescEl = document.getElementById('modal-success-desc');
-                            if (pollData.product_type === 'tool' || pollData.product_type === 'ai') {
+                            const isQv = pollData.is_qv || (!pollData.telegram_link && (pollData.product_type === 'tool' || pollData.product_type === 'ai'));
+                            const directLink = pollData.direct_link || (pollData.download_link && pollData.download_link.startsWith('http') ? pollData.download_link : null);
+                            const successUrl = pollData.success_url || (getAppBaseUrl() + '/payment/success/' + pollData.invoice_no);
+                            const actionLink = directLink || pollData.download_link || successUrl;
+
+                            if (isQv) {
+                                if (directLink) {
+                                    if (successDescEl) {
+                                        successDescEl.textContent = 'ការទូទាត់ជោគជ័យ! សូមចុចប៊ូតុងខាងក្រោមដើម្បីបើក Link របស់អ្នក៖';
+                                    }
+                                    if (telegramBtn) {
+                                        telegramBtn.textContent = '🚀 បើក Link (Open Link)';
+                                        telegramBtn.href = directLink;
+                                        telegramBtn.className = 'custom-modal-btn tool-btn';
+                                        telegramBtn.style.display = 'inline-block';
+                                    }
+                                } else {
+                                    if (successDescEl) {
+                                        successDescEl.textContent = 'ការទូទាត់ជោគជ័យ! សូមចុចប៊ូតុងខាងក្រោមដើម្បីទទួលព័ត៌មាន Account របស់អ្នក៖';
+                                    }
+                                    if (telegramBtn) {
+                                        telegramBtn.textContent = 'មើល Account / Invoice';
+                                        telegramBtn.href = successUrl;
+                                        telegramBtn.className = 'custom-modal-btn tool-btn';
+                                        telegramBtn.style.display = 'inline-block';
+                                    }
+                                }
+                                showView('success');
+
+                                if (directLink) {
+                                    setTimeout(() => {
+                                        window.open(directLink, '_blank');
+                                    }, 1000);
+                                }
+                            } else if (pollData.product_type === 'tool' || pollData.product_type === 'ai') {
                                 if (successDescEl) {
                                     successDescEl.textContent = 'Your payment has been confirmed. Click below to access your tool/account:';
                                 }
                                 if (telegramBtn) {
                                     telegramBtn.textContent = 'Access Tool / Account';
-                                    telegramBtn.href = pollData.download_link || (getAppBaseUrl() + '/payment/success/' + pollData.invoice_no);
+                                    telegramBtn.href = actionLink;
                                     telegramBtn.className = 'custom-modal-btn tool-btn';
                                     telegramBtn.style.display = 'inline-block';
                                 }
                                 showView('success');
 
-                                if (pollData.download_link) {
+                                if (actionLink) {
                                     setTimeout(() => {
-                                        window.open(pollData.download_link, '_blank');
+                                        window.open(actionLink, '_blank');
                                     }, 1000);
                                 }
                             } else {
