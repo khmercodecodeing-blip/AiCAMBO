@@ -142,8 +142,33 @@
             <div id="modal-success-view" class="modal-success-view" style="display: none;">
                 <div class="modal-success-icon">✓</div>
                 <h3 style="margin-bottom: 8px; color: var(--green-400); font-weight: 700;">Payment Successful!</h3>
-                <p id="modal-success-desc" style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 16px;">Your payment has been confirmed. Click below to join the private group:</p>
-                <a href="#" id="modal-telegram-btn" target="_blank" class="custom-modal-btn telegram-btn">Join Telegram Group</a>
+                <p id="modal-success-desc" style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 12px;">Your payment has been confirmed. Click below to join the private group:</p>
+                
+                <!-- Notice / Warning to save details safely -->
+                <div id="modal-save-warning" style="display: none; width: 100%; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 10px; padding: 10px 12px; margin-bottom: 14px; text-align: left; box-sizing: border-box;">
+                    <div style="display: flex; align-items: flex-start; gap: 8px; color: #fbbf24; font-size: 0.8rem; line-height: 1.45;">
+                        <span style="font-size: 1.1rem; line-height: 1;">⚠️</span>
+                        <span><strong>សូមរក្សាទុកព័ត៌មាននេះឱ្យបានល្អ!</strong><br>សូមចម្លង (Copy) Link ឬទាញយកជាឯកសារ .txt រក្សាទុកកុំឱ្យបាត់បង់។</span>
+                    </div>
+                </div>
+
+                <!-- Link / Account info box with 1-click Copy -->
+                <div id="modal-link-box" style="display: none; width: 100%; margin-bottom: 14px; text-align: left; box-sizing: border-box;">
+                    <label style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; margin-bottom: 6px; display: block;">Link / ព័ត៌មានរបស់អ្នក៖</label>
+                    <div style="display: flex; gap: 6px; width: 100%; box-sizing: border-box;">
+                        <input type="text" id="modal-copy-input" readonly style="flex: 1; min-width: 0; background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 12px; color: #38bdf8; font-family: monospace; font-size: 0.82rem; outline: none;" />
+                        <button type="button" id="modal-copy-btn" class="custom-modal-btn" style="width: auto; padding: 8px 14px; font-size: 0.82rem; margin: 0; white-space: nowrap; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; cursor: pointer;">
+                            📋 Copy
+                        </button>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; width: 100%; gap: 8px;">
+                    <a href="#" id="modal-telegram-btn" target="_blank" class="custom-modal-btn telegram-btn" style="margin: 0;">Join Telegram Group</a>
+                    <button type="button" id="modal-txt-download-btn" class="custom-modal-btn" style="display: none; margin: 0; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border-color); color: #f8fafc; font-size: 0.85rem; cursor: pointer;">
+                        📥 ទាញយកជា .txt (Download .txt)
+                    </button>
+                </div>
             </div>
 
             <!-- Error View (Hidden initially) -->
@@ -450,7 +475,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <script src="<?= asset('js/qrcode.min.js') ?>"></script>
 <script>if (typeof QRCode === 'undefined') { document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>'); }</script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="<?= asset('js/app.js') ?>?v=2.0.5"></script>
+<script src="<?= asset('js/app.js') ?>?v=2.0.6"></script>
 
 </body>
 </html>

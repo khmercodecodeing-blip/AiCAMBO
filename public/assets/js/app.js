@@ -196,6 +196,40 @@ function initBuyButtons() {
     const countdownTimerEl = document.getElementById('modal-countdown-timer');
     const telegramBtn = document.getElementById('modal-telegram-btn');
     const errorTextEl = document.getElementById('modal-error-text');
+    const saveWarningEl = document.getElementById('modal-save-warning');
+    const linkBoxEl = document.getElementById('modal-link-box');
+    const copyInputEl = document.getElementById('modal-copy-input');
+    const copyBtnEl = document.getElementById('modal-copy-btn');
+    const txtDownloadBtn = document.getElementById('modal-txt-download-btn');
+
+    if (copyBtnEl && copyInputEl) {
+        copyBtnEl.addEventListener('click', () => {
+            const val = copyInputEl.value;
+            if (!val) return;
+            navigator.clipboard.writeText(val).then(() => {
+                const origText = copyBtnEl.innerHTML;
+                copyBtnEl.innerHTML = '✅ បានចម្លង!';
+                setTimeout(() => {
+                    copyBtnEl.innerHTML = origText;
+                }, 2000);
+                if (typeof Swal !== 'undefined') {
+                    Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 2000,
+                        background: '#ffffff',
+                        color: '#0f172a'
+                    }).fire({
+                        icon: 'success',
+                        title: 'បានចម្លងជោគជ័យ!'
+                    });
+                }
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        });
+    }
 
     // Summary fields
     const summaryProductTitle = document.getElementById('summary-product-title');
@@ -247,6 +281,14 @@ function initBuyButtons() {
             if (summaryDiscountRow) summaryDiscountRow.style.display = 'none';
             if (agreePolicyCheckbox) agreePolicyCheckbox.checked = false;
             if (proceedPaymentBtn) proceedPaymentBtn.disabled = true;
+            if (saveWarningEl) saveWarningEl.style.display = 'none';
+            if (linkBoxEl) linkBoxEl.style.display = 'none';
+            if (copyInputEl) copyInputEl.value = '';
+            if (copyBtnEl) copyBtnEl.innerHTML = '📋 Copy';
+            if (txtDownloadBtn) {
+                txtDownloadBtn.style.display = 'none';
+                txtDownloadBtn.onclick = null;
+            }
             activeCourseId = 0;
             activePromoCode = '';
         }, 300);
@@ -480,11 +522,52 @@ function initBuyButtons() {
                             const directLink = pollData.direct_link || (pollData.download_link && pollData.download_link.startsWith('http') ? pollData.download_link : null);
                             const successUrl = pollData.success_url || (getAppBaseUrl() + '/payment/success/' + pollData.invoice_no);
                             const actionLink = directLink || pollData.download_link || successUrl;
+                            const deliveredStock = pollData.delivered_stock || '';
+
+                            const triggerTxtDownload = (content, filename) => {
+                                if (!txtDownloadBtn) return;
+                                txtDownloadBtn.style.display = 'block';
+                                txtDownloadBtn.onclick = (e) => {
+                                    e.preventDefault();
+                                    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+                                    const tempLink = document.createElement('a');
+                                    tempLink.href = URL.createObjectURL(blob);
+                                    tempLink.download = filename;
+                                    document.body.appendChild(tempLink);
+                                    tempLink.click();
+                                    document.body.removeChild(tempLink);
+                                };
+                            };
 
                             if (isQv) {
+                                if (saveWarningEl) saveWarningEl.style.display = 'block';
+
+                                const copyVal = directLink || deliveredStock || actionLink;
+                                if (copyInputEl && copyVal) {
+                                    copyInputEl.value = copyVal;
+                                }
+                                if (linkBoxEl && copyVal) {
+                                    linkBoxEl.style.display = 'block';
+                                }
+
+                                const txtContent = `===================================================
+AICAMBO STORE - ORDER DETAILS
+===================================================
+Invoice No:    ${pollData.invoice_no || ''}
+Status:        COMPLETED
+
+LINK / ACCOUNT DETAILS:
+${deliveredStock || directLink || actionLink}
+
+===================================================
+⚠️ សូមរក្សាទុកព័ត៌មាននេះឱ្យបានល្អ (Please save this file safely!)
+Website: https://aicambo.store
+===================================================`;
+                                triggerTxtDownload(txtContent, `Account_${pollData.invoice_no || 'Details'}.txt`);
+
                                 if (directLink) {
                                     if (successDescEl) {
-                                        successDescEl.textContent = 'ការទូទាត់ជោគជ័យ! សូមចុចប៊ូតុងខាងក្រោមដើម្បីបើក Link របស់អ្នក៖';
+                                        successDescEl.textContent = 'ការទូទាត់ជោគជ័យ! សូមចុចខាងក្រោមដើម្បីបើក Link ឬ Copy រក្សាទុក៖';
                                     }
                                     if (telegramBtn) {
                                         telegramBtn.textContent = '🚀 បើក Link (Open Link)';
@@ -494,7 +577,7 @@ function initBuyButtons() {
                                     }
                                 } else {
                                     if (successDescEl) {
-                                        successDescEl.textContent = 'ការទូទាត់ជោគជ័យ! សូមចុចប៊ូតុងខាងក្រោមដើម្បីទទួលព័ត៌មាន Account របស់អ្នក៖';
+                                        successDescEl.textContent = 'ការទូទាត់ជោគជ័យ! សូមពិនិត្យព័ត៌មាន Account របស់អ្នកខាងក្រោម៖';
                                     }
                                     if (telegramBtn) {
                                         telegramBtn.textContent = 'មើល Account / Invoice';
@@ -504,15 +587,30 @@ function initBuyButtons() {
                                     }
                                 }
                                 showView('success');
-
-                                if (directLink) {
-                                    setTimeout(() => {
-                                        window.open(directLink, '_blank');
-                                    }, 1000);
-                                }
                             } else if (pollData.product_type === 'tool' || pollData.product_type === 'ai') {
+                                if (saveWarningEl) saveWarningEl.style.display = 'block';
+                                if (copyInputEl && actionLink) {
+                                    copyInputEl.value = actionLink;
+                                }
+                                if (linkBoxEl && actionLink) {
+                                    linkBoxEl.style.display = 'block';
+                                }
+
+                                const txtContent = `===================================================
+AICAMBO STORE - TOOL ACCESS
+===================================================
+Invoice No:    ${pollData.invoice_no || ''}
+Link:          ${actionLink}
+Status:        COMPLETED
+
+===================================================
+⚠️ សូមរក្សាទុកព័ត៌មាននេះឱ្យបានល្អ (Please save this file safely!)
+Website: https://aicambo.store
+===================================================`;
+                                triggerTxtDownload(txtContent, `Tool_Access_${pollData.invoice_no || ''}.txt`);
+
                                 if (successDescEl) {
-                                    successDescEl.textContent = 'Your payment has been confirmed. Click below to access your tool/account:';
+                                    successDescEl.textContent = 'ការទូទាត់ជោគជ័យ! សូមចុចខាងក្រោមដើម្បីចូលទៅកាន់ Tool របស់អ្នក៖';
                                 }
                                 if (telegramBtn) {
                                     telegramBtn.textContent = 'Access Tool / Account';
@@ -521,12 +619,6 @@ function initBuyButtons() {
                                     telegramBtn.style.display = 'inline-block';
                                 }
                                 showView('success');
-
-                                if (actionLink) {
-                                    setTimeout(() => {
-                                        window.open(actionLink, '_blank');
-                                    }, 1000);
-                                }
                             } else {
                                 if (successDescEl) {
                                     successDescEl.textContent = 'Your payment has been confirmed. Click below to join the private group:';
@@ -537,13 +629,11 @@ function initBuyButtons() {
                                     telegramBtn.className = 'custom-modal-btn telegram-btn';
                                     telegramBtn.style.display = 'inline-block';
                                 }
-                                showView('success');
-
                                 if (pollData.telegram_link) {
-                                    setTimeout(() => {
-                                        window.open(pollData.telegram_link, '_blank');
-                                    }, 1000);
+                                    if (copyInputEl) copyInputEl.value = pollData.telegram_link;
+                                    if (linkBoxEl) linkBoxEl.style.display = 'block';
                                 }
+                                showView('success');
                             }
                         }
                     } catch (err) {

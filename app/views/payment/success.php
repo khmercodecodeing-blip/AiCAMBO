@@ -68,20 +68,29 @@ require APP_ROOT . '/app/views/layouts/header.php';
             <section class="purchase-delivery" aria-labelledby="account-delivery-title" style="min-width:0;text-align:left;">
                 <h2 id="account-delivery-title" style="font-size:1.1rem;">ព័ត៌មាន Account (Account Details)</h2>
                 <?php if (($invoice['qv_status'] ?? '') === 'delivered' && !empty($invoice['delivered_stock'])): ?>
+                    <div style="background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 12px 16px; margin: 12px 0 16px 0;">
+                        <div style="display: flex; align-items: flex-start; gap: 8px; color: #fbbf24; font-size: 0.88rem; line-height: 1.45; font-weight: 500;">
+                            <span style="font-size: 1.2rem; line-height: 1;">⚠️</span>
+                            <span><strong>សូមរក្សាទុកព័ត៌មាននេះឱ្យបានល្អ!</strong><br>សូមចម្លង (Copy) Link ឬទាញយកជាឯកសារ .txt រក្សាទុក ដើម្បីកុំឱ្យបាត់បង់។</span>
+                        </div>
+                    </div>
                     <?php
                         $qvDirectLink = null;
                         if (preg_match('/https?:\/\/[^\s\'"<>\)]+/', $invoice['delivered_stock'], $qvMatches)) {
                             $qvDirectLink = rtrim($qvMatches[0], '.,;:');
                         }
                     ?>
-                    <?php if ($qvDirectLink): ?>
-                        <div style="margin: 14px 0 18px 0;">
-                            <a class="btn btn-primary" href="<?= e($qvDirectLink) ?>" target="_blank" rel="noopener noreferrer" style="background: var(--gradient-primary); font-size: 1rem; font-weight: 700; padding: 12px 24px; display: inline-flex; align-items: center; gap: 8px;">
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 16px 0;">
+                        <?php if ($qvDirectLink): ?>
+                            <a class="btn btn-primary" href="<?= e($qvDirectLink) ?>" target="_blank" rel="noopener noreferrer" style="background: var(--gradient-primary); font-size: 0.95rem; font-weight: 700; padding: 10px 20px; display: inline-flex; align-items: center; gap: 8px;">
                                 🚀 បើក Link (Open Link)
                             </a>
-                        </div>
-                    <?php endif; ?>
-                    <pre style="white-space:pre-wrap;overflow-wrap:anywhere;font-size:0.9rem;max-width:100%;padding:12px 0;"><?= e($invoice['delivered_stock']) ?></pre>
+                        <?php endif; ?>
+                        <button type="button" onclick="copyQvDetails()" id="btn-copy-qv" class="btn btn-ghost" style="border: 1px solid var(--border-color); font-size: 0.9rem; padding: 10px 18px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+                            📋 ចម្លងព័ត៌មាន (Copy)
+                        </button>
+                    </div>
+                    <pre id="qv-delivered-secret" style="white-space:pre-wrap;overflow-wrap:anywhere;font-size:0.9rem;max-width:100%;padding:12px 0;"><?= e($invoice['delivered_stock']) ?></pre>
                     <a class="btn btn-primary" href="<?= APP_URL ?>/payment/account/<?= e($invoice['invoice_no']) ?>">ទាញយក Account (.txt)</a>
                 <?php else: ?>
                     <p role="status">ការបង់ប្រាក់បានទទួលរួចហើយ។ Account កំពុងរង់ចាំការប្រគល់។ សូមទាក់ទង Support ដោយផ្ដល់លេខ Invoice នេះ។ មិនចាំបាច់បង់ប្រាក់ម្ដងទៀតទេ។</p>
@@ -150,6 +159,35 @@ require APP_ROOT . '/app/views/layouts/header.php';
 </div>
 
 <script>
+function copyQvDetails() {
+    const el = document.getElementById('qv-delivered-secret');
+    if (!el) return;
+    const text = el.textContent ? el.textContent.trim() : el.innerText.trim();
+    navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('btn-copy-qv');
+        if (btn) {
+            const orig = btn.innerHTML;
+            btn.innerHTML = '✅ បានចម្លង!';
+            setTimeout(() => { btn.innerHTML = orig; }, 2000);
+        }
+        if (typeof Swal !== 'undefined') {
+            Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 2000,
+                background: '#ffffff',
+                color: '#0f172a'
+            }).fire({
+                icon: 'success',
+                title: 'បានចម្លងជោគជ័យ!'
+            });
+        }
+    }).catch(err => {
+        console.error('Failed to copy text: ', err);
+    });
+}
+
 function copySuccessLicenseKey() {
     const keyEl = document.getElementById('license-key-value');
     if (!keyEl) return;
